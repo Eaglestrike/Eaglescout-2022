@@ -1,0 +1,43 @@
+(function($){
+	$(function(){
+		$('.button-collapse').sideNav();
+  });
+})(jQuery);
+$(document).ready(function() {
+	$('select').material_select();
+	if (typeof shouldInitSlider !== 'undefined' && shouldInitSlider == true) {
+		$('input[type=range]').val(0);
+	}
+});
+$(document).ready(function(){
+	$('.modal').modal();
+});
+$("#ranking-filter-select").change(function() {
+	if ($(this).val() == "") {
+		window.location.replace("/scout/teamranking");
+	} else {
+		window.location.replace("/scout/teamranking?filter=" + $(this).val());
+	}
+});
+
+$(".increment_number_minus_button").click(function() {
+	var element_for = $(this).data("for");
+	var new_val = parseInt($('input[name="' + element_for + '"]').val()) - 1;
+	if (new_val < 0) new_val = 0;
+	$('input[name="' + element_for + '"]').val(new_val);
+});
+
+$(".increment_number_plus_button").click(function() {
+	var element_for = $(this).data("for");
+	$('input[name="' + element_for + '"]').val(parseInt($('input[name="' + element_for + '"]').val()) + 1);
+});
+
+$("#team-search").keypress(function(e) {
+    if (e.which == 13) {
+        window.location.replace("/scout/list/" + $("#team-search").val());
+    }
+});
+
+$("#team-search-button").click(function() {
+	window.location.replace("/scout/list/" + $("#team-search").val());
+});

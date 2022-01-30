@@ -1,0 +1,66 @@
+<nav class="blue darken-2">
+    <div class="nav-wrapper container">
+        <div class="col s12">
+            <a href="/scout" class="breadcrumb">Scout</a>
+            <a href="/scout" class="breadcrumb">Dashboard</a>
+        </div>
+    </div>
+</nav>
+
+{{#if success_msg}}
+<div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+        <div class="row">
+            <div class="info-message green white-text">
+                {{success_msg}}
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if error_msg}}
+<div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+        <div class="row">
+            <div class="info-message red darken-1 white-text">
+                {{error_msg}}
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if error}}
+<div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+        <div class="row">
+            <div class="info-message red darken-1 white-text">
+                {{error}}
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+<div class="section no-pad-bot" id="index-banner">
+	<div class="container center">
+		<h1 class="header center blue-text text-darken-4">Eaglescout<span class="bullet"> &bull; </span><span class="subtitle">Scout Dashboard</span></h1>
+        <br>
+		<a class="waves-effect waves-light btn-large green darken-2" href="/scout/new"><i class="material-icons left">add</i>New Observation</a>
+        <a class="waves-effect waves-light btn-large blue darken-2" href="/scout/list"><i class="material-icons left">list</i>Scout List</a>
+        <a class="waves-effect waves-light btn-large purple darken-2" href="/scout/teamranking"><i class="material-icons left">bookmark</i>Team Ranking</a>
+        <br><br>
+        <div class="container">
+            <div class="row">
+                <h5>Search for a team</h5>
+                <div class="input-field">
+                    <input class="validate" id="team-search" placeholder="Team Number" type="number">
+                </div>
+                <a class="waves-effect waves-light btn-large red" id="team-search-button">Search</a>
+            </div>
+        </div>
+        <br><br>
+        <a class="waves-effect waves-light btn-large green" href="/scout/csv"><i class="material-icons left">file_download</i>Export Observations to CSV</a>
+	</div>
+</div>

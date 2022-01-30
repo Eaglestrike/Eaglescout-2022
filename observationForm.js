@@ -1,0 +1,542 @@
+var utils = require('./utils');
+var TBA = require('./TBA');
+
+/********************
+* Types of inputs *
+- null (no input)
+- dropdown [requires data]
+- short_text
+- long_text
+- multiple_choice [requires data]
+- checkbox [requires data]
+- number 
+- increment_number 
+- slider [requires data]
+********************/
+
+var rankingStructure = {
+	place: {
+		name: "Place",
+		data: null
+	},
+	team: {
+		name: "<span class='no-mobile'>Team </span>#",
+		data: "team"
+	},
+	points: {
+		name: "Points",
+		data: "points"
+	},
+	image: {
+		name: "Image",
+		data: "image"
+	}
+}
+
+var tableStructure = {
+	team: {
+		name: "<span class='no-mobile'>Team </span>#",
+		data: "team"
+	},
+	more: {
+		name: "More Info",
+		data: {
+			user: {
+				name: "User",
+				data: "user"
+			},
+			match: {
+				name: "Match Number",
+				data: "match"
+			},
+			auto_taxi: {
+				name: "[Auto] Taxi",
+				data: "auto_taxi"
+			},
+			auto_low_goals: {
+				name: "[Auto] Low Goals Scored",
+				data: "auto_low_goals"
+			},
+			auto_high_goals: {
+				name: "[Auto] High Goals Scored",
+				data: "auto_high_goals"
+			},
+			auto_comments: {
+				name: "[Auto] Extra Comments",
+				data: "auto_comments"
+			},
+			teleop_low_goals: {
+				name: "[Teleop] Low Goals Scored",
+				data: "teleop_low_goals"
+			},
+			teleop_high_goals: {
+				name: "[Teleop] High Goals Scored",
+				data: "teleop_high_goals"
+			},
+			teleop_collect_balls: {
+				name: "[Teleop] Where balls are collected from",
+				data: "teleop_collect_balls"
+			},
+			teleop_shoot_balls: {
+				name: "[Teleop] Where balls are shooted from",
+				data: "teleop_shoot_balls"
+			},
+			teleop_robot_died: {
+				name: "[Teleop] Robot died",
+				data: "teleop_robot_died"
+			},
+			teleop_time_robot_died: {
+				name: "[Teleop] How long robot was dead",
+				data: "teleop_time_robot_died"
+			},
+			teleop_comments: {
+				name: "[Teleop] Extra comments",
+				data: "teleop_comments"
+			},
+			time_on_defense: {
+				name: "[Defense] Percent of time on defense",
+				data: "time_on_defense"
+			},
+			speed: {
+				name: "[Bot] Speed compared to our robot",
+				data: "speed"
+			},
+			endgame_climb: {
+				name: "[Endgame] Climb",
+				data: "endgame_climb"
+			},
+			endgame_comments: {
+				name: "[Endgame] Extra comments",
+				data: "endgame_comments"
+			},
+			final_comments: {
+				name: "Final comments",
+				data: "final_comments"
+			}
+		}
+	}
+}
+
+var observationFormSchema = {
+	user: {
+		type: String,
+		input: null
+	},
+	competition: {
+		type: String,
+		input: "dropdown",
+		placeholder: "Select a competition",
+		title: "Current competition",
+		subtitle: "If you're at a practice match, select \"Practice Match\""
+	},
+	match: {
+		type: String,
+		input: "number",
+		placeholder: "Match number only",
+		title: "Match Number",
+		subtitle: "This is the number of the match that you are observing"
+	},
+	team: {
+		type: String,
+		input: "number",
+		placeholder: "Team number only",
+		title: "Team Number",
+		subtitle: "This is the team number that you are observing"
+	},
+	auto_taxi: {
+		type: String,
+		input: "multiple_choice",
+		data: {
+			"yes": "Yes",
+			"no": "No"
+		},
+		placeholder: "Yes or No",
+		title: "Did they drive outside the tarmac?"
+	},
+	auto_low_goals: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Auto] Low goals scored",
+		subtitle: "How many balls were successfully scored in the low goal during auto?"
+	},
+	auto_high_goals: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Auto] High goals scored",
+		subtitle: "How many balls were successfully scored in the high/inner goals during auto?"
+	},
+	auto_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Auto] Extra comments",
+		subtitle: "Anything noteworthy that occurred during the autonomous period"
+	},
+	teleop_low_goals: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Teleop] Low goals scored",
+		subtitle: "How many balls were successfully scored in the low goal during teleop?"
+	},
+	teleop_high_goals: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Teleop] High goals scored",
+		subtitle: "How many balls were successfully scored in the high goal during teleop?"
+	},
+	teleop_collect_balls: {
+		type: String,
+		input: "checkbox",
+		placeholder: "Select all that apply",
+		data: {
+			"player_station": "Player Station/Terminal",
+			"ground": "Ground",
+			"air": "Can stop the balls bouncing"
+		},
+		title: "[Teleop] Where balls are collected from",
+		subtitle: "Describe how the robot intakes balls. If it's notable, expand more in the teleop comments."
+	},
+	teleop_shoot_balls: {
+		type: String,
+		input: "checkbox",
+		placeholder: "Select all that apply",
+		data: {
+			"launch_pad": "Completely within the Protected Zone / Launch Pad",
+			"tarmac": "Colored zone in front of the hub",
+			"across_field": "Across the field",
+			"one position": "One set area they have to shoot from, elaborate in comments",
+			"across_field": "Can shoot across the field",
+			"enemy_territory": "Shoots from opponent side of the field"
+		},
+		title: "[Teleop] Where balls are being shot from",
+		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
+	},	
+	teleop_robot_died: {
+		type: String,
+		input: "multiple_choice",
+		data: {
+			"yes": "Yes",
+			"no": "No"
+		},
+		title: "[Teleop] Did the robot die?",
+		subtitle: "If they did, note the time of death for the next question"
+	},
+	teleop_time_robot_died: {
+		type: String,
+		input: "number",
+		placeholder: "Format: number of seconds only",
+		title: "[Teleop] Amount of time that robot was dead",
+		subtitle: "Max: 150. If the robot didn't die, leave this blank"
+	},
+	teleop_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Teleop] Extra comments",
+		subtitle: "Write anything that might be noteworthy about teleop here."
+	},
+	time_on_defense: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 0,
+			"max": 100
+		},
+		title: "[Defense] Percent of time on defense",
+		subtitle: "Approximate percent of time on defense"
+	},
+	speed: {
+		type: String,
+		input: "dropdown",
+		data: {
+			"slow": "Slow (lower than 8 ft/second)",
+			"medium": "Medium (8 ft/second to 15 ft/second)",
+			"fast": "Fast (greater than 15 ft/second)",
+		},
+		placeholder: "Select one",
+		title: "[Bot] Speed compared to our robot (18 ft/second)",
+		subtitle: "Approximate this if you can"
+	},
+	endgame_climb: {
+		type: String,
+		input: "dropdown",
+		placeholder: "Select applicable",
+		data: {
+			"low bar": "Successful low bar climb",
+			"mid bar": "Successful mid bar climb",
+			"high_bar": "Successful high_bar climb",
+			"traverse_bar": "Successful traverse_bar climb",
+			"failed": "Attempted a climb but failed (elaborate which in comments, explain failure",
+			"no_attempt": "Did not attempt"
+		},
+		title: "[Endgame] Climbing",
+		subtitle: "Carefully select all that apply"
+	},
+	endgame_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Endgame] Any extra comments about the end of the game?",
+		subtitle: "Put anything that would be noteworthy about the end of the game here."
+	},
+	final_comments: {
+		type: String,
+		input: "long_text",
+		title: "Any extra comments about the game overall? (very important!)",
+		subtitle: "Describe the driver skill, notable robot mechanisms/skills/flaws/behaviors, and anything else we should know as we try to imagine a robot."
+	},
+}
+
+function getObservationFormStructure() {
+	var form = {};
+	for (var key in observationFormSchema) {
+		if ("data" in observationFormSchema[key]) {
+			form[key] = {
+				input: observationFormSchema[key].input,
+				placeholder: observationFormSchema[key].placeholder,
+				data: observationFormSchema[key].data,
+				title: observationFormSchema[key].title,
+				subtitle: observationFormSchema[key].subtitle
+			}
+		} else if (observationFormSchema[key].input != null) {
+			form[key] = {
+				input: observationFormSchema[key].input,
+				placeholder: observationFormSchema[key].placeholder,
+				title: observationFormSchema[key].title,
+				subtitle: observationFormSchema[key].subtitle
+			}
+		}
+	}
+	return form;
+}
+
+function getObservationFormSchema() {
+	var schema = {};
+	for (var key in observationFormSchema) {
+		schema[key] = {
+			type: observationFormSchema[key].type
+		};
+	}
+	return schema;
+}
+
+function getObservationFormHandlebarsHelper(structure, options) {
+	var id = 0;
+
+	var finalString = '<form method="post" action="/scout/new">\n<div class="container">\n<div class="row">';
+	for (var category in structure) {
+		if (category == "events") continue;
+		finalString += '<p>';
+		finalString += '<b>' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		finalString += '</p>';
+		if (category == "competition") {
+			finalString += '<select name="competition">\n';
+			finalString += '<option value="" disabled ' + (utils.getCurrentEvent() == null ? 'selected' : '') + '>Choose event from list</option>\n';
+			for (var event in structure.events) {
+				finalString += '<option value="' + structure.events[event]["key"] + '"' + (structure.events[event]["current"] ? ' selected' : '') + '>' + structure.events[event]["name"] + '</option>\n';
+			}
+			finalString += '</select>\n';
+		} else {
+			if (structure[category].input == "dropdown") {
+				finalString += '<select name="' + category + '">\n';
+				finalString += '<option value="" disabled selected>' + structure[category].placeholder + '</option>\n';
+				for (var option in structure[category].data) {
+					finalString += '<option value="' + option + '">' + (structure[category].data)[option] + '</option>\n';
+				}
+				finalString += '</select>\n';
+			} else if (structure[category].input == "multiple_choice") {
+				for (var option in structure[category].data) {
+					finalString += '<p>\n';
+      				finalString += '<input class="with-gap" name="' + category + '" value="' + option + '" type="radio" id="' + option + '_' + id + '" />\n';
+      				finalString += '<label for="' + option + '_' + (id ++) + '">' + (structure[category].data)[option] + '</label>\n';
+      				finalString += '</p>\n';
+      			}
+			} else if (structure[category].input == "long_text") {
+				finalString += '<div class="input-field">\n';
+				finalString += '<textarea name="' + category + '" class="materialize-textarea"></textarea>\n';
+          		finalString += '<label for="' + category + '">Message</label>\n';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "short_text") {
+				finalString += '<div class="input-field">\n';
+				finalString += '<input placeholder="' + structure[category].placeholder + '" name="' + category + '" type="text">\n';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "checkbox") {
+				finalString += '<select name="' + category + '" multiple>\n';
+				finalString += '<option value="" disabled selected>' + structure[category].placeholder + '</option>\n';
+				for (var option in structure[category].data) {
+					finalString += '<option value="' + option + '">' + (structure[category].data)[option] + '</option>\n';
+				}
+				finalString += '</select>\n';
+			} else if (structure[category].input == "number") {
+				finalString += '<div class="input-field">\n';
+				finalString += '<input class="validate" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number">\n';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "increment_number") {
+				finalString += '<div class="input-field row">\n';
+				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '">-</a>';
+				finalString += '<div class="col s1"></div>';
+				finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
+				finalString += '<div class="col s1"></div>';
+				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_plus_button col s2" data-for="' + category + '">+</a>';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "slider") {
+				finalString += '<p class="range-field">';
+			    finalString += '<input type="range" name="' + category + '" min="' + (structure[category].data)["min"] + '" max="' + (structure[category].data)["max"] + '" />';
+			    finalString += '</p>';
+			}
+		}
+		finalString += '<br>';
+	}
+	finalString += '</div>\n</div>\n<div class="center">\n<button class="btn waves-effect waves-light green" type="submit" name="action">Submit</button>\n</div>\n</form>';
+	return finalString;
+}
+
+function getEditObservationHandlebarsHelper(observation, structure, observationID, options) {
+	var id = 0;
+
+	var finalString = '<form method="post" action="/scout/saveobservation/' + observationID + '">\n<div class="container">\n<div class="row">';
+	for (var category in structure) {
+		if (category == "events") continue;
+		finalString += '<p>';
+		finalString += '<b>' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		finalString += '</p>';
+		if (category == "competition") {
+			finalString += '<select name="competition">\n';
+			finalString += '<option value="" disabled ' + (utils.getCurrentEvent() == null ? 'selected' : '') + '>Choose event from list</option>\n';
+			for (var event in structure.events) {
+				finalString += '<option value="' + structure.events[event]["key"] + '"' + (structure.events[event]["key"] == observation[category] ? ' selected' : '') + '>' + structure.events[event]["name"] + '</option>\n';
+			}
+			finalString += '</select>\n';
+		} else {
+			if (structure[category].input == "dropdown") {
+				finalString += '<select name="' + category + '">\n';
+				finalString += '<option value="" disabled selected>' + structure[category].placeholder + '</option>\n';
+				for (var option in structure[category].data) {
+					finalString += '<option value="' + option + '"' + (option == observation[category] ? ' selected' : '') + '>' + (structure[category].data)[option] + '</option>\n';
+				}
+				finalString += '</select>\n';
+			} else if (structure[category].input == "multiple_choice") {
+				for (var option in structure[category].data) {
+					finalString += '<p>\n';
+      				finalString += '<input class="with-gap" name="' + category + '" value="' + option + '" type="radio" id="' + option + '_' + id + '"' + (option == observation[category] ? ' checked' : '') + ' />\n';
+      				finalString += '<label for="' + option + '_' + (id ++) + '">' + (structure[category].data)[option] + '</label>\n';
+      				finalString += '</p>\n';
+      			}
+			} else if (structure[category].input == "long_text") {
+				finalString += '<div class="input-field">\n';
+				finalString += '<textarea name="' + category + '" class="materialize-textarea">' + observation[category] + '</textarea>\n';
+          		finalString += '<label for="' + category + '">Message</label>\n';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "short_text") {
+				finalString += '<div class="input-field">\n';
+				finalString += '<input placeholder="' + structure[category].placeholder + '" name="' + category + '" type="text" value="' + observation[category] + '">\n';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "checkbox") {
+				finalString += '<select name="' + category + '" multiple>\n';
+				finalString += '<option value="" disabled selected>' + structure[category].placeholder + '</option>\n';
+				for (var option in structure[category].data) {
+					finalString += '<option value="' + option + '"' + (observation[category] !== undefined && observation[category].split(",").includes(option) ? ' selected' : '') + '>' + (structure[category].data)[option] + '</option>\n';
+				}
+				finalString += '</select>\n';
+			} else if (structure[category].input == "number") {
+				finalString += '<div class="input-field">\n';
+				finalString += '<input class="validate" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="' + observation[category] + '">\n';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "increment_number") {
+				finalString += '<div class="input-field row">\n';
+				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '">-</a>';
+				finalString += '<div class="col s1"></div>';
+				finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="' + observation[category] + '">\n';
+				finalString += '<div class="col s1"></div>';
+				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_plus_button col s2" data-for="' + category + '">+</a>';
+          		finalString += '</div>\n';
+			} else if (structure[category].input == "slider") {
+				finalString += '<p class="range-field">';
+			    finalString += '<input type="range" name="' + category + '" min="' + (structure[category].data)["min"] + '" max="' + (structure[category].data)["max"] + '" value="' + observation[category] + '" />';
+			    finalString += '</p>';
+			}
+		}
+		finalString += '<br>';
+	}
+	finalString += '</div>\n</div>\n<div class="center">\n<button class="btn waves-effect waves-light green" type="submit" name="action">Submit</button>\n</div>\n</form>';
+	return finalString;
+}
+
+function getTableHandlebarsHelper(structure, res, options) {
+	var finalString = "<table class='bordered'>\n<thead>\n";
+	for (var category in tableStructure) finalString += "<th>" + tableStructure[category]["name"] + "</th>\n";
+	finalString += "<th class='no-mobile'>Edit</th>\n";
+	finalString += "<th class='no-mobile'>Delete</th>\n";
+	finalString += "</thead>\n";
+	for (var observation in structure) {
+		finalString += "<tr>";
+		for (var category in tableStructure) {
+			var data = tableStructure[category]["data"];
+			if (typeof data == 'object') {
+				finalString += "<td>";
+				for (var subcategory in data) {
+					var data_subcategory = tableStructure[category]["data"][subcategory]["data"];
+					var display = structure[observation][data_subcategory];
+					if (display == null || display == "" || display == "undefined" || display == "NaN") continue;
+					if (observationFormSchema[subcategory]["input"] == "checkbox") {
+						var selectedChecks = display.split(",");
+						var checkboxFinalString = "";
+						for (var item in selectedChecks) {
+							checkboxFinalString += observationFormSchema[subcategory]["data"][selectedChecks[item]] + ", ";
+						}
+						checkboxFinalString = checkboxFinalString.substring(0, checkboxFinalString.length - 2);
+						display = checkboxFinalString;
+					} else if ("data" in observationFormSchema[subcategory] && observationFormSchema[subcategory]["input"] !== "slider") {
+						display = observationFormSchema[subcategory]["data"][display];
+					}
+					finalString += "<b>" + tableStructure[category]["data"][subcategory]["name"] + ": </b>" + display + "</b><br>";
+				}
+				finalString += "</td>";
+			} else if (category == "team") {
+				finalString += "<td><a href='/scout/list/" + structure[observation][data] + "'>" + structure[observation][data] + "</a></td>";
+			} else {
+				finalString += "<td>" + structure[observation][data] + "</td>";
+			}
+		}
+		finalString += "<td class='no-mobile'><a class='waves-effect waves-light btn-large light-blue" + (res.locals.user.admin || res.locals.user.email == structure[observation]["user"] ? "" : " disabled") + "' href='/scout/editobservation/" + structure[observation]["_id"] + "'><i class='material-icons'>create</i></a></td>";
+		finalString += "<td class='no-mobile'><a class='waves-effect waves-light btn-large red modal-trigger open-modal" + (res.locals.user.admin || res.locals.user.email == structure[observation]["user"] ? "" : " disabled") + "' href='#confirm-delete-modal' data-id='" + structure[observation]["_id"] + "'><i class='material-icons'>delete</i></a></td>";
+		finalString += "</tr>";
+	}
+	finalString += "</table>";
+	return finalString;
+}
+
+function getRankingHandlebarsHelper(structure, options) {
+	var finalString = "<table class='bordered'>\n<thead>\n";
+	for (var category in rankingStructure) finalString += "<th" + (category == "image" ? " class='no-mobile'" : '') + ">" + rankingStructure[category]["name"] + "</th>\n";
+	for (var observation in structure) {
+		finalString += "<tr>";
+		for (var category in rankingStructure) {
+			var data = rankingStructure[category]["data"];
+			if (category == "place") {
+				finalString += "<td>" + (parseInt(observation) + 1) + "</td>";
+			} else if (category == "team") {
+				finalString += "<td><a href='/scout/list/" + structure[observation][data] + "'>" + structure[observation][data] + "</a></td>";
+				continue;
+			} else if (category == "image") {
+				finalString += "<td class='no-mobile'>" + (structure[observation][data] == null ? "none" : "<a href='" + structure[observation][data] + "' target='_blank'><img src='" + structure[observation][data] + "' style='height: 200px'></img></a>") + "</td>";
+			} else {
+				finalString += "<td>" + structure[observation][data] + "</td>";
+			}
+		}
+		finalString += "</tr>";
+	}
+	finalString += "</thead>\n";
+	finalString += "</table>";
+	return finalString;
+}
+
+module.exports = {
+	getObservationFormSchema: getObservationFormSchema,
+	getObservationFormStructure: getObservationFormStructure,
+	getObservationFormHandlebarsHelper: getObservationFormHandlebarsHelper,
+	getEditObservationHandlebarsHelper: getEditObservationHandlebarsHelper,
+	getTableHandlebarsHelper: getTableHandlebarsHelper,
+	getRankingHandlebarsHelper: getRankingHandlebarsHelper
+};
