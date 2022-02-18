@@ -155,7 +155,9 @@ var observationFormSchema = {
 			"no": "No"
 		},
 		placeholder: "Yes or No",
-		title: "Did they drive outside the tarmac?"
+		title: "[Auto] Tarmac",
+		subtitle: "Did they drive outside the tarmac?"
+
 	},
 	auto_low_goals: {
 		type: String,
