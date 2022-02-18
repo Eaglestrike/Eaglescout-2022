@@ -105,6 +105,10 @@ var tableStructure = {
 				name: "[Endgame] Climb",
 				data: "endgame_climb"
 			},
+			endgame_climb_time: {
+				name: "[Endgame] Climb time",
+				data: "endgame_climb_time"
+			},
 			endgame_comments: {
 				name: "[Endgame] Extra comments",
 				data: "endgame_comments"
@@ -194,7 +198,6 @@ var observationFormSchema = {
 		data: {
 			"player_station": "Player Station/Terminal",
 			"ground": "Ground",
-			"air": "Can stop the balls bouncing"
 		},
 		title: "[Teleop] Where balls are collected from",
 		subtitle: "Describe how the robot intakes balls. If it's notable, expand more in the teleop comments."
@@ -208,8 +211,6 @@ var observationFormSchema = {
 			"tarmac": "Colored zone in front of the hub",
 			"across_field": "Across the field",
 			"one position": "One set area they have to shoot from, elaborate in comments",
-			"across_field": "Can shoot across the field",
-			"enemy_territory": "Shoots from opponent side of the field"
 		},
 		title: "[Teleop] Where balls are being shot from",
 		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
@@ -264,15 +265,25 @@ var observationFormSchema = {
 		input: "dropdown",
 		placeholder: "Select applicable",
 		data: {
-			"low bar": "Successful low bar climb",
-			"mid bar": "Successful mid bar climb",
-			"high_bar": "Successful high_bar climb",
-			"traverse_bar": "Successful traverse_bar climb",
-			"failed": "Attempted a climb but failed (elaborate which in comments, explain failure",
+			"low_bar": "Successful low bar climb",
+			"mid_bar": "Successful mid bar climb",
+			"high_bar": "Successful high bar climb",
+			"traverse_bar": "Successful traverse bar climb",
+			"failed": "Attempted a climb but failed (elaborate which in comments, explain failure)",
 			"no_attempt": "Did not attempt"
 		},
 		title: "[Endgame] Climbing",
 		subtitle: "Carefully select all that apply"
+	},
+	endgame_climb_time: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 0,
+			"max": 60
+		},
+		title: "[Endgame] Time to climb",
+		subtitle: "Estimate the amount of time it took for robot to climb"
 	},
 	endgame_comments: {
 		type: String,

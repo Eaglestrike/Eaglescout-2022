@@ -47,19 +47,16 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 					'auto_high_goals': [],
 					'teleop_low_goals': [],
 					'teleop_high_goals': [],
-					'teleop_inner_goals': [],
-					'intake_player': false,
+					'intake_player_station': false,
 					'intake_ground': false,
-					'shoot_trench_run': false,
-					'shoot_target_zone': false,
+					'shoot_tarmac': false,
+					'shoot_launch_pad': false,
 					'shoot_across_field': false,
-					'control_success': [],
-					'control_speeds': [],
 					'speeds': [],
 					'defense': [],
-					'climb': [],
+					'climb_level': [],
+					'climb_time': [],
 					'climb_fail': [],
-					'active_leveling': false,
 					'death_percent': []
 				}
 			}
@@ -70,69 +67,45 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 			if (!isNaN(parseInt(observations[observation]['auto_high_goals']))) rankings[team]['auto_high_goals'].push(parseInt(observations[observation]['auto_high_goals']));
 			if (!isNaN(parseInt(observations[observation]['teleop_low_goals']))) rankings[team]['teleop_low_goals'].push(parseInt(observations[observation]['teleop_low_goals']));
 			if (!isNaN(parseInt(observations[observation]['teleop_high_goals']))) rankings[team]['teleop_high_goals'].push(parseInt(observations[observation]['teleop_high_goals']));
-			if (!isNaN(parseInt(observations[observation]['teleop_inner_goals']))) rankings[team]['teleop_inner_goals'].push(parseInt(observations[observation]['teleop_inner_goals']));
 
-			rankings[team]['intake_player'] = false;
-			rankings[team]['intake_ground'] = false;
 			if (observations[observation]['teleop_collect_balls'] !== undefined) {
 				var intakes_array = observations[observation]['teleop_collect_balls'].split(",");
-				rankings[team]['intake_player'] = intakes_array.includes("player_station");
+				rankings[team]['intake_player_station'] = intakes_array.includes("player_station");
 				rankings[team]['intake_ground'] = intakes_array.includes("ground");
 			}
 
-			rankings[team]['shoot_trench_run'] = false;
-			rankings[team]['shoot_target_zone'] = false;
-			rankings[team]['shoot_across_field'] = false;
 			if (observations[observation]['teleop_shoot_balls'] !== undefined) {
 				var intakes_array = observations[observation]['teleop_shoot_balls'].split(",");
-				rankings[team]['shoot_trench_run'] = intakes_array.includes("trench_run");
-				rankings[team]['shoot_target_zone'] = intakes_array.includes("target_zone");
+				rankings[team]['shoot_tarmac'] = intakes_array.includes("tarmac");
+				rankings[team]['shoot_launch_pad'] = intakes_array.includes("launch_pad");
 				rankings[team]['shoot_across_field'] = intakes_array.includes("across_field");
 			}
-
-			var control_success = 0;
-			if (observations[observation]['teleop_color_wheel'] !== undefined) {
-				switch(observations[observation]['teleop_color_wheel']) {
-					case 'success_all':
-						control_success = 2;
-						break;
-					case 'success_rotation':
-						control_success = 1;
-						break;
-					default:
-						break;
-				}
-			}
-			rankings[team]['control_success'].push(control_success);
-
-			var control_speed = 0;
-			if (observations[observation]['teleop_rotation_time'] !== undefined) {
-				switch(observations[observation]['teleop_rotation_time']) {
-					case 'slow':
-						control_speed = -1;
-						break;
-					case 'fast': 
-						control_speed = 1;
-						break;
-					default:
-						break;
-				}
-			}
-			rankings[team]['control_speeds'].push(control_speed);
-
+		
 
 			if (observations[observation]['endgame_climb'] !== undefined) {
-				var climb_array = observations[observation]['endgame_climb'].split(",");
+				var climb = observations[observation]['endgame_climb'];
 				// Climb = 1, Climb (Leveled) = 2
-				rankings[team]['climb'].push(
-					(climb_array.includes("successful") ? 1 : 0) + 
-					(climb_array.includes("level") ? 1 : 0)
-				)
-				// Fail = 1, No Attempt = 0
-				if (climb_array.includes("failed")) rankings[team]['climb_fail'].push(1);
-				if (climb_array.includes("no_attempt")) rankings[team]['climb_fail'].push(0);
-
-				rankings[team]['active_leveling'] = climb_array.includes("active_leveling");
+				switch (climb){
+					case "low_bar":
+						rankings[team]["climb_level"].push(4);
+						break;
+					case "mid bar":
+						rankings[team]["climb_level"].push(6);
+						break;
+					case "high_bar":
+						rankings[team]["climb_level"].push(10);
+						break;
+					case "traverse_bar":
+						rankings[team]["climb_level"].push(15);
+						break;
+					case "failed":
+						rankings[team]["climb_fail"].push(-1);
+						climb_fail.push(true)
+						break;
+					case "no_attempt":
+						rankings[team]["climb_level"].push(0)
+						break;
+				}
 			}
 
 			// Only count speed if time dead is less than 120 seconds
@@ -159,18 +132,6 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 			switch (req.query.filter) {
 				case "goals":
 					filter = filters.goals;
-					break;
-				case "shooting":
-					filter = filters.shooting;
-					break;
-				case "control":
-					filter = filters.control;
-					break;
-				case "intakes":
-					filter = filters.intakes;
-					break;
-				case "speeds":
-					filter = filters.speeds;
 					break;
 				case "climb":
 					filter = filters.climb;
@@ -204,15 +165,11 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				res.render('teamranking', {
 					points: points,
 					goals: req.query.filter == "goals",
-					shooting: req.query.filter == "shooting",
-					control: req.query.filter == "control",
-					intakes: req.query.filter == "intakes",
-					speeds: req.query.filter == "speeds",
 					climb: req.query.filter == "climb"
 				});
 			} else {
 				TBA.getImage(points[index]["team"], image => {
-					points[index ++]["image"] = image;
+					points[index++]["image"] = image;
 					asyncForLoop();
 				});
 			}
