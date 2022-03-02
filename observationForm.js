@@ -73,9 +73,9 @@ var tableStructure = {
 				name: "[Teleop] High Goals Scored",
 				data: "teleop_high_goals"
 			},
-			teleop_collect_balls: {
-				name: "[Teleop] Where balls are collected from",
-				data: "teleop_collect_balls"
+			teleop_eject_balls: {
+				name: "[Teleop] Did they have a thing to eject wrong color balls?",
+				data: "teleop_eject_balls"
 			},
 			teleop_shoot_balls: {
 				name: "[Teleop] Where balls are shooted from",
@@ -193,16 +193,18 @@ var observationFormSchema = {
 		title: "[Teleop] High goals scored",
 		subtitle: "How many balls were successfully scored in the high goal during teleop?"
 	},
-	teleop_collect_balls: {
+	teleop_eject_balls: {
 		type: String,
 		input: "checkbox",
 		placeholder: "Select all that apply",
 		data: {
-			"player_station": "Player Station/Terminal",
-			"ground": "Ground",
+			"seperate_eject": "Yes, could eject with a seperate mechanism automatically",
+			"shooting_eject_auto": "Yes, ejected with the shooter automatically",
+			"shooting_eject_manual": "Yes, ejected with the shooter manually",
+			"cannot eject": "Fired wrong color balls in",
 		},
-		title: "[Teleop] Where balls are collected from",
-		subtitle: "Describe how the robot intakes balls. If it's notable, expand more in the teleop comments."
+		title: "[Teleop] Did they have a thing to eject wrong color balls?",
+		subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
 	},
 	teleop_shoot_balls: {
 		type: String,
