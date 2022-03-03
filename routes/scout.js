@@ -96,7 +96,6 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 						break;
 					case "failed":
 						rankings[team]["climb_fail"].push(-1);
-						climb_fail.push(true)
 						break;
 					case "no_attempt":
 						rankings[team]["climb_level"].push(0)
