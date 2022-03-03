@@ -212,7 +212,7 @@ var observationFormSchema = {
 		placeholder: "Select all that apply",
 		data: {
 			"launch_pad": "Completely within the Protected Zone / Launch Pad",
-			"tarmac": "Colored zone in front of the hub",
+			"tarmac": "The Tarmac (Colored zone in front of the hub)",
 			"terminal": "From the terminal",
 			"wherever": "Litearlly wherever they want to",
 			"one position": "One set area they have to shoot from, elaborate in comments",
