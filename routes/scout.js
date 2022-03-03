@@ -47,11 +47,10 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 					'auto_high_goals': [],
 					'teleop_low_goals': [],
 					'teleop_high_goals': [],
-					'intake_player_station': false,
-					'intake_ground': false,
-					'shoot_tarmac': false,
 					'shoot_launch_pad': false,
-					'shoot_across_field': false,
+					'shoot_tarmac': false,
+					'shoot_terminal': false,
+					'shoot_wherever': false,
 					'speeds': [],
 					'defense': [],
 					'climb_level': [],
@@ -68,17 +67,14 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 			if (!isNaN(parseInt(observations[observation]['teleop_low_goals']))) rankings[team]['teleop_low_goals'].push(parseInt(observations[observation]['teleop_low_goals']));
 			if (!isNaN(parseInt(observations[observation]['teleop_high_goals']))) rankings[team]['teleop_high_goals'].push(parseInt(observations[observation]['teleop_high_goals']));
 
-			if (observations[observation]['teleop_collect_balls'] !== undefined) {
-				var intakes_array = observations[observation]['teleop_collect_balls'].split(",");
-				rankings[team]['intake_player_station'] = intakes_array.includes("player_station");
-				rankings[team]['intake_ground'] = intakes_array.includes("ground");
-			}
 
 			if (observations[observation]['teleop_shoot_balls'] !== undefined) {
 				var intakes_array = observations[observation]['teleop_shoot_balls'].split(",");
 				rankings[team]['shoot_tarmac'] = intakes_array.includes("tarmac");
 				rankings[team]['shoot_launch_pad'] = intakes_array.includes("launch_pad");
-				rankings[team]['shoot_across_field'] = intakes_array.includes("across_field");
+				rankings[team]['shoot_terminal'] = intakes_array.includes("terminal");
+				rankings[team]['shoot_wherever'] = intakes_array.includes("wherever");
+				
 			}
 		
 
