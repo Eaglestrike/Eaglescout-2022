@@ -171,7 +171,7 @@ var observationFormSchema = {
 		input: "increment_number",
 		placeholder: "Number only",
 		title: "[Auto] High goals scored",
-		subtitle: "How many balls were successfully scored in the high/inner goals during auto?"
+		subtitle: "How many balls were successfully scored in the high/upper goals during auto?"
 	},
 	auto_comments: {
 		type: String,
