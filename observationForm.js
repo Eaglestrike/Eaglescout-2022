@@ -213,7 +213,8 @@ var observationFormSchema = {
 		data: {
 			"launch_pad": "Completely within the Protected Zone / Launch Pad",
 			"tarmac": "Colored zone in front of the hub",
-			"across_field": "Across the field",
+			"across_field": "From the terminal",
+			"wherever": "Litearlly wherever they want to",
 			"one position": "One set area they have to shoot from, elaborate in comments",
 		},
 		title: "[Teleop] Where balls are being shot from",
