@@ -21,6 +21,20 @@
 .input-field .prefix.active {
 	color: #1565c0;
 }
+.no-padding {
+	column-gap: 0px;
+}
+.small-table {
+	width: min(100%, 300px) !important;
+}
+.med-text {
+	font-size: 2rem;
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+.alternate-colors:nth-child(even){
+	background-color: lightgrey;
+}
 .info-message {
 	padding: 10px;
 	font-size: 1.2em;

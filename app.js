@@ -28,6 +28,7 @@ var app = express();
 var hbs = exphbs.create({
     defaultLayout: 'layout',
     helpers: {
+        teamSummary: observationForm.getTeamSummaryHandlebarsHelper,
         observationForm: observationForm.getObservationFormHandlebarsHelper,
         editForm: observationForm.getEditObservationHandlebarsHelper,
         table: observationForm.getTableHandlebarsHelper,

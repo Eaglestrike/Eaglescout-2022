@@ -201,7 +201,7 @@ var observationFormSchema = {
 			"seperate_eject": "Yes, could eject with a seperate mechanism automatically",
 			"shooting_eject_auto": "Yes, ejected with the shooter automatically",
 			"shooting_eject_manual": "Yes, ejected with the shooter manually",
-			"cannot eject": "Fired wrong color balls in",
+			"cannot_eject": "Fired wrong color balls in",
 		},
 		title: "[Teleop] Did they have a thing to eject wrong color balls?",
 		subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
@@ -215,7 +215,7 @@ var observationFormSchema = {
 			"tarmac": "The Tarmac (Colored zone in front of the hub)",
 			"terminal": "From the terminal",
 			"wherever": "Litearlly wherever they want to",
-			"one position": "One set area they have to shoot from, elaborate in comments",
+			"one_position": "One set area they have to shoot from, elaborate in comments",
 		},
 		title: "[Teleop] Where balls are being shot from",
 		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
@@ -332,6 +332,7 @@ function getObservationFormSchema() {
 	for (var key in observationFormSchema) {
 		schema[key] = {
 			type: observationFormSchema[key].type
+
 		};
 	}
 	return schema;
@@ -479,14 +480,76 @@ function getEditObservationHandlebarsHelper(observation, structure, observationI
 	return finalString;
 }
 
+function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, options){
+	var finalString = "";
+	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Maximum Observed Robot Capabilities: </h2>";
+	finalString += "<table>\n<thead>"
+	finalString += "<th class='no-mobile no-padding'>Category</th>\n"
+	finalString += "<th class='no-mobile no-padding'>Maximum</th>\n"
+	finalString += "</thead>\n"
+	for(var category in teamCapabilities){
+		finalString+="<tr class='no-padding alternate-colors'><td class='no-padding'>";
+			if(category=='teleop_robot_died'){
+			finalString+="<b>Games Robot Has Died</b></td><td class='no-padding'>";
+			finalString+=teamCapabilities[category]+"</td></tr>"
+			continue;
+		}
+		if(category=='defense_games_played'){
+			finalString+="<b>Defense Games Played</b></td><td class='no-padding'>";
+			finalString+=teamCapabilities[category]+"</td></tr>"
+			continue;
+		}
+		if(tableStructure["more"]["data"][category] == undefined) continue;
+		finalString+="<b>"+tableStructure["more"]["data"][category]["name"] + "</b></td><td class='no-padding'>";
+		if(typeof teamCapabilities[category] === 'object'){
+			var arr = [];
+			for(var obs in teamCapabilities[category]){
+				arr.push(observationFormSchema[category]["data"][teamCapabilities[category][obs]]);
+			}
+			var arrStr = arr.join(', ');
+			finalString += arrStr;
+			continue;
+		}
+		if(typeof teamCapabilities[category] === 'string'){
+			finalString += observationFormSchema[category]["data"][teamCapabilities[category]];
+			continue;
+		}
+		finalString+=teamCapabilities[category]+"</td></tr>";
+	}
+	
+	finalString+="</table></br>";
+	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Average Points Generated Summary: </h2>";
+	finalString += "<table class='small-table'>\n<thead>"
+	finalString += "<th class='no-mobile no-padding'>Category</th>\n"
+	finalString += "<th class='no-mobile no-padding'>Points</th>\n"
+	finalString += "</thead>\n"
+	for(var category in teamAverage){
+		finalString+="<tr class='no-padding alternate-colors'><td class='no-padding'>";
+		var points = Math.floor(teamAverage[category]*100)/100;
+		if(category=='points_generated'){
+			finalString+="<b>Average Points Per Game</b></td><td class='no-padding'>";
+			finalString+=points+"</td></tr>"
+			continue;
+		}
+		if(tableStructure["more"]["data"][category] == undefined) continue;
+		finalString+="<b>"+tableStructure["more"]["data"][category]["name"] + "</b></td><td class='no-padding'>";
+		finalString+=points+"</td></tr>";
+	}
+	finalString+="</table>";
+	return finalString;
+
+}
 function getTableHandlebarsHelper(structure, res, options) {
-	var finalString = "<table class='bordered'>\n<thead>\n";
+	var finalString = "";
+
+	finalString+="<table class='bordered'>\n<thead>\n";
 	for (var category in tableStructure) finalString += "<th>" + tableStructure[category]["name"] + "</th>\n";
 	finalString += "<th class='no-mobile'>Edit</th>\n";
 	finalString += "<th class='no-mobile'>Delete</th>\n";
 	finalString += "</thead>\n";
 	for (var observation in structure) {
 		finalString += "<tr>";
+		if(structure[observation]['team'] == undefined) continue;
 		for (var category in tableStructure) {
 			var data = tableStructure[category]["data"];
 			if (typeof data == 'object') {
@@ -523,6 +586,7 @@ function getTableHandlebarsHelper(structure, res, options) {
 	return finalString;
 }
 
+
 function getRankingHandlebarsHelper(structure, options) {
 	var finalString = "<table class='bordered'>\n<thead>\n";
 	for (var category in rankingStructure) finalString += "<th" + (category == "image" ? " class='no-mobile'" : '') + ">" + rankingStructure[category]["name"] + "</th>\n";
@@ -549,6 +613,7 @@ function getRankingHandlebarsHelper(structure, options) {
 }
 
 module.exports = {
+	getTeamSummaryHandlebarsHelper: getTeamSummaryHandlebarsHelper,
 	getObservationFormSchema: getObservationFormSchema,
 	getObservationFormStructure: getObservationFormStructure,
 	getObservationFormHandlebarsHelper: getObservationFormHandlebarsHelper,

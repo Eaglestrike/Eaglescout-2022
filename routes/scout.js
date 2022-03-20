@@ -8,6 +8,18 @@ var userlist = require("../userlist.js");
 var filters = require("../config/filters");
 var multipliers = require("../config/multipliers");
 
+function concatUnique(a,b) {
+    var c = a.concat(b);
+    for(var i=0; i<c.length; ++i) {
+        for(var j=i+1; j<c.length; ++j) {
+            if(c[i] === c[j])
+                c.splice(j--, 1);
+        }
+    }
+
+    return c;
+};
+
 router.get('/list', utils.ensureAuthenticated, function(req, res) {
 	Observation.find({}, function(err, observations) {
 		observations.sort(function(a,b) {
@@ -27,7 +39,150 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		observations.sort(function(a,b) {
 			return a.team - b.team;
 		});
+			
+	//maxes
+	var games_played = 0;
+	var robotCapabilities = {
+		auto_taxi: "",
+		auto_low_goals: 0,
+		auto_high_goals: 0,
+		teleop_low_goals: 0,
+		teleop_high_goals: 0,
+		teleop_eject_balls: [],
+		teleop_shoot_balls: [],
+		//0 is slow, 1 is medium, 2 is fast
+		speed: 0,
+		//climb is 0 is none, 1 is low, 2 is mid, 3 is high, 4 is traversal
+		endgame_climb: 0,
+		teleop_robot_died: 0,
+		defense_games_played: 0
+	};
+	//averages
+	var gamePoints = {
+		auto_taxi: 2,
+		auto_low_goals: 2,
+		auto_high_goals: 4,
+		teleop_low_goals: 1,
+		teleop_high_goals: 2,
+		endgame_climb: [0,4,6,10,15]
+	};
+	var robotAverages = {
+		auto_taxi: 0,
+		auto_low_goals: 0,
+		auto_high_goals: 0,
+		teleop_low_goals: 0,
+		teleop_high_goals: 0,
+		endgame_climb: 0,
+		points_generated: 0
+	};
+
+	for(var observation in observations){
+		games_played++;
+
+		for(var key in robotCapabilities){
+			if(observationForm.getObservationFormStructure()[key] == null){
+				if(key == 'defense_games_played'){
+					if(observations[observation]['time_on_defense'] > 0){
+						robotCapabilities['defense_games_played']++;
+					}
+				}
+				continue;
+			}
+			if(observationForm.getObservationFormStructure()[key].input == 'number' || observationForm.getObservationFormStructure()[key].input == 'increment_number' || observationForm.getObservationFormStructure()[key].input == 'slider'){
+				robotCapabilities[key] = Math.max(robotCapabilities[key],parseInt(observations[observation][key]));
+			}
+			else if(observationForm.getObservationFormStructure()[key].input == 'multiple_choice'){
+				//currently assuming all multiple choice questions are yes no
+				if(observations[observation][key] != null){
+					if(key == 'teleop_robot_died' && observations[observation][key] == 'yes'){
+						robotCapabilities['teleop_robot_died']++;
+						continue;
+					}
+					if(observations[observation][key] == 'yes'){
+						robotCapabilities[key] = "yes"
+					}
+				}
+			}
+			else if(observationForm.getObservationFormStructure()[key].input == 'dropdown'){
+				//dropdowns require custom sorting
+				if(observations[observation][key] != null){
+					if(key == 'speed'){
+						cur_speed = 0;
+						if(observations[observation][key] == 'fast') cur_speed = 2;
+						else if(observations[observation][key] == 'medium') cur_speed = 1;
+						else if(observations[observation][key] == 'slow') cur_speed = 0;
+						robotCapabilities[key] = Math.max(robotCapabilities[key],cur_speed);
+					}
+					if(key == 'endgame_climb'){
+						cur_climb = 0;
+						if(observations[observation][key] == 'traverse_bar') cur_climb = 4;
+						else if(observations[observation][key] == 'high_bar') cur_climb = 3;
+						else if(observations[observation][key] == 'mid_bar') cur_climb = 2;
+						else if(observations[observation][key] == 'low_bar') cur_climb = 1;
+						else cur_climb = 0;
+
+						robotCapabilities[key] = Math.max(robotCapabilities[key],cur_climb);
+					}
+					
+				}
+			}
+			else{
+				if(observations[observation][key] != null){
+					robotCapabilities[key] = concatUnique(robotCapabilities[key], observations[observation][key].split(','));
+				}
+			}
+		}
+		
+		for(var key in robotAverages){
+			if(observationForm.getObservationFormStructure()[key] == null){
+				if(key == 'points_generated') continue;
+			}
+			if(observationForm.getObservationFormStructure()[key].input == 'number' || observationForm.getObservationFormStructure()[key].input == 'increment_number' || observationForm.getObservationFormSchema()[key].input == 'slider'){
+				robotAverages[key] +=gamePoints[key] * parseInt(observations[observation][key]);
+			}
+			else if(observationForm.getObservationFormStructure()[key].input == 'multiple_choice'){
+				if(observations[observation][key] != null){
+					if(key == 'auto_taxi' ){
+						robotAverages[key]+=gamePoints[key] * (observations[observation][key] == 'yes');
+					}
+				}
+			}
+			else if(observationForm.getObservationFormStructure()[key].input == 'dropdown'){
+				//dropdowns require custom sorting
+				if(observations[observation][key] != null){
+					if(key == 'endgame_climb'){
+						cur_climb = 0;
+						if(observations[observation][key] == 'traverse_bar') cur_climb = 4;
+						else if(observations[observation][key] == 'high_bar') cur_climb = 3;
+						else if(observations[observation][key] == 'mid_bar') cur_climb = 2;
+						else if(observations[observation][key] == 'low_bar') cur_climb = 1;
+						else cur_climb = 0;
+						robotAverages[key] += gamePoints[key][cur_climb];
+					}
+				}
+			}
+			else{
+				continue;
+			}
+		}
+		sum = 0;
+		for(var key in robotAverages){
+			if(key == 'points_generated'){
+				continue;
+			}
+			sum+=robotAverages[key];
+			robotAverages[key] = robotAverages[key]/games_played;
+			
+		}
+		robotAverages['points_generated'] = sum/games_played;
+	}
+	endgameClimb=['no_attempt', 'low_bar', 'mid_bar', 'high_bar', 'traverse_bar'];
+	robotCapabilities['endgame_climb'] = endgameClimb[robotCapabilities['endgame_climb']];
+	speed=['slow', 'medium', 'fast'];
+	robotCapabilities['speed'] = speed[robotCapabilities['speed']];
 		res.render('list', {
+			teamAverage: robotAverages,
+			teamCapabilities: robotCapabilities,
 			observations: observations,
 			res: res,
 			team: req.params.team
