@@ -99,9 +99,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		}
 		
 		for(var key in robotAverages){
-			if(observationForm.getObservationFormStructure()[key] == null){
-				if(key == 'points_generated') continue;
-			}
+			if(observations[observation][key] == null || observations[observation][key] == undefined) continue;
 			if(typeof(summary.capabilities[key]) == 'object'){
 				robotAverages[key] += summary.gamePoints[key][observations[observation][key]];
 			}
@@ -110,23 +108,27 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 
 			}
 		}
-		sum = 0;
-		for(var key in robotAverages){
-			if(key == 'points_generated'){
-				continue;
-			}
-			sum+=robotAverages[key];
-			robotAverages[key] = robotAverages[key]/games_played;
-			
-		}
-		robotAverages['points_generated'] = sum/games_played;
+		
 	}
 	for(var key in robotCapabilities){
 		if(typeof(summary.capabilities[key]) == 'object'){
 			var rsum = summary.capabilities[key];
 			robotCapabilities[key] = Object.keys(rsum).find(val => rsum[val] === robotCapabilities[key]);
 		}
+		if(typeof(robotCapabilities[key]) == 'object'){
+			robotCapabilities[key] = concatUnique(robotCapabilities[key].sort(),[]);
+		}
 	}
+	sum = 0;
+	for(var key in robotAverages){
+		if(key == 'points_generated'){
+			continue;
+		}
+		sum+=robotAverages[key];
+		robotAverages[key] = robotAverages[key]/games_played;
+		
+	}
+		robotAverages['points_generated'] = sum/games_played;
 		res.render('list', {
 			teamAverage: robotAverages,
 			teamCapabilities: robotCapabilities,
