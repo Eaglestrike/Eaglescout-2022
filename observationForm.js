@@ -113,6 +113,10 @@ var tableStructure = {
 				name: "[Endgame] Extra comments",
 				data: "endgame_comments"
 			},
+			driver_skill: {
+				name: "Driver Skill",
+				data: "driver_skill"
+			},
 			final_comments: {
 				name: "Final comments",
 				data: "final_comments"
@@ -295,6 +299,16 @@ var observationFormSchema = {
 		input: "long_text",
 		title: "[Endgame] Any extra comments about the end of the game?",
 		subtitle: "Put anything that would be noteworthy about the end of the game here."
+	},
+	driver_skill: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 1,
+			"max": 5
+		},
+		title: "Driver Skill",
+		subtitle: "On a scale from 1 (very bad) - 5 (very good), please rate how good the driving was"
 	},
 	final_comments: {
 		type: String,
@@ -481,8 +495,8 @@ function getEditObservationHandlebarsHelper(observation, structure, observationI
 }
 
 function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, options){
-	var finalString = "";
-	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Maximum Observed Robot Capabilities: </h2>";
+	var finalString = "";	
+	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Observed Robot Capabilities: </h2>";
 	finalString += "<table>\n<thead>"
 	finalString += "<th class='no-mobile no-padding'>Category</th>\n"
 	finalString += "<th class='no-mobile no-padding'>Maximum</th>\n"
@@ -491,12 +505,12 @@ function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, options){
 		finalString+="<tr class='no-padding alternate-colors'><td class='no-padding'>";
 			if(category=='teleop_robot_died'){
 			finalString+="<b>Games Robot Has Died</b></td><td class='no-padding'>";
-			finalString+=teamCapabilities[category]+"</td></tr>"
+			finalString+='Matches (' + teamCapabilities[category]+")</td></tr>"
 			continue;
 		}
-		if(category=='defense_games_played'){
-			finalString+="<b>Defense Games Played</b></td><td class='no-padding'>";
-			finalString+=teamCapabilities[category]+"</td></tr>"
+		if(category=='time_on_defense'){
+			finalString+="<b>[Defense] Defense Games Played</b></td><td class='no-padding'>";
+			finalString+='Matches (' + teamCapabilities[category]+")</td></tr>"
 			continue;
 		}
 		if(tableStructure["more"]["data"][category] == undefined) continue;
