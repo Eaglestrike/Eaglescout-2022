@@ -9,16 +9,17 @@ var filters = require("../config/filters");
 var multipliers = require("../config/multipliers");
 var summary = require("../config/summary");
 
-function concatUnique(a,b) {
-    var c = a.concat(b);
-    for(var i=0; i<c.length; ++i) {
-        for(var j=i+1; j<c.length; ++j) {
-            if(c[i] === c[j])
-                c.splice(j--, 1);
+function removeDuplicates(a) {
+    for(var i=0; i<a.length; ++i) {
+		if(a[i] == "") 
+			a.splice(i--,1);
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
         }
     }
 
-    return c;
+    return a;
 };
 
 router.get('/list', utils.ensureAuthenticated, function(req, res) {
@@ -81,17 +82,17 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 					robotCapabilities[key] = Math.max(robotCapabilities[key],parseInt(observations[observation][key]));
 				}
 				else if(summary.capabilities[key] == 'string_arr'){
-					robotCapabilities[key] = concatUnique(robotCapabilities[key], observations[observation][key].split(','));
+					robotCapabilities[key] = removeDuplicates(robotCapabilities[key].concat(observations[observation][key].split(',')));
 				}
 				else if(summary.capabilities[key] == 'match_list'){
 					if(isNaN(parseInt(observations[observation][key]))){
 						if(observations[observation][key] == 'yes'){
-							robotCapabilities[key].push(observations[observation]['match']);
+							robotCapabilities[key].push(parseInt(observations[observation]['match']));
 						}
 					}
 					else{
 						if(observations[observation][key] > 0){
-							robotCapabilities[key].push(observations[observation]['match']);
+							robotCapabilities[key].push(parseInt(observations[observation]['match']));
 						}
 					}
 				}
@@ -115,8 +116,11 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 			var rsum = summary.capabilities[key];
 			robotCapabilities[key] = Object.keys(rsum).find(val => rsum[val] === robotCapabilities[key]);
 		}
-		if(typeof(robotCapabilities[key]) == 'object'){
-			robotCapabilities[key] = concatUnique(robotCapabilities[key].sort(),[]);
+		if(summary.capabilities[key]=='match_list'){
+			robotCapabilities[key] = removeDuplicates(
+				robotCapabilities[key].sort(function(a, b) {
+				return a - b;
+			  }));
 		}
 	}
 	sum = 0;
@@ -271,6 +275,8 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				res.render('teamranking', {
 					points: points,
 					goals: req.query.filter == "goals",
+					totalpoints: req.query.filter == "totalpoints",
+					defense: req.query.filter == "defense",
 					climb: req.query.filter == "climb"
 				});
 			} else {
