@@ -9,30 +9,22 @@ var filters = require("../config/filters");
 var multipliers = require("../config/multipliers");
 var summary = require("../config/summary");
 
-function removeDuplicates(a) {
-    for(var i=0; i<a.length; ++i) {
-		if(a[i] == "") 
-			a.splice(i--,1);
-        for(var j=i+1; j<a.length; ++j) {
-            if(a[i] === a[j])
-                a.splice(j--, 1);
-        }
-    }
 
-    return a;
-};
 
 router.get('/list', utils.ensureAuthenticated, function(req, res) {
-	Observation.find({}, function(err, observations) {
+	Observation.find({
+	}, function(err, observations) {
 		observations.sort(function(a,b) {
 			return a.team - b.team;
 		});
-		res.render('list', {
+
+		// observations = [];
+		res.render("list", {
 			observations: observations,
 			res: res
 		});
 	});
-});
+})
 
 router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 	Observation.find({
@@ -69,11 +61,23 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		endgame_climb: 0,
 		points_generated: 0
 	};
+	function removeDuplicates(a) {
+		for(var i=0; i<a.length; ++i) {
+			if(a[i] == "" || a[i]==undefined) 
+				a.splice(i--,1);
+			for(var j=i+1; j<a.length; ++j) {
+				if(a[i] === a[j])
+					a.splice(j--, 1);
+			}
+		}
+	
+		return a;
+	};
 	for(var observation in observations){
 		games_played++;
 
 		for(var key in robotCapabilities){
-			if(observations[observation][key] == null || observations[observation][key] == undefined) continue;
+			if(observations[observation][key] == null || observations[observation][key] == undefined || observations[observation][key]=="") continue;
 			if(typeof(summary.capabilities[key]) == 'object'){
 				robotCapabilities[key] = Math.max(robotCapabilities[key],summary.capabilities[key][observations[observation][key]]);
 			}
@@ -100,7 +104,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		}
 		
 		for(var key in robotAverages){
-			if(observations[observation][key] == null || observations[observation][key] == undefined) continue;
+			if(observations[observation][key] == null || observations[observation][key] == undefined ||observations[observation][key]=="") continue;
 			if(typeof(summary.capabilities[key]) == 'object'){
 				robotAverages[key] += summary.gamePoints[key][observations[observation][key]];
 			}
@@ -117,13 +121,14 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 			robotCapabilities[key] = Object.keys(rsum).find(val => rsum[val] === robotCapabilities[key]);
 		}
 		if(summary.capabilities[key]=='match_list'){
-			robotCapabilities[key] = removeDuplicates(
-				robotCapabilities[key].sort(function(a, b) {
+			robotCapabilities[key] = removeDuplicates(robotCapabilities[key]).sort(function(a, b) {
 				return a - b;
-			  }));
+			  });
 		}
 	}
 	sum = 0;
+	
+	
 	for(var key in robotAverages){
 		if(key == 'points_generated'){
 			continue;
@@ -132,14 +137,18 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		robotAverages[key] = robotAverages[key]/games_played;
 		
 	}
-		robotAverages['points_generated'] = sum/games_played;
+	robotAverages['points_generated'] = sum/games_played;
+	TBA.getImage(req.params.team, image => {
 		res.render('list', {
 			teamAverage: robotAverages,
 			teamCapabilities: robotCapabilities,
 			observations: observations,
 			res: res,
-			team: req.params.team
+			team: req.params.team,
+			img: image
 		});
+	});
+		
 	});
 });
 
@@ -229,65 +238,39 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				rankings[team]['speeds'].push(speed);
 			}
 		}
-
 		var points = [];
 		for (var ranking in rankings) {
-			var filter;
-			switch (req.query.filter) {
-				case "goals":
-					filter = filters.goals;
-					break;
-				case "climb":
-					filter = filters.climb;
-					break;
-				case "totalpoints":
-					filter = filters.points;
-					break;
-				case "defense":
-					filter = filters.defense;
-					break;
-				case "undefined":
-					filter = multipliers.multipliers;
-					break;
-				default:
-					filter = multipliers.multipliers;
-					break;
-			}
 			var currentObj = {
 				team: ranking
 			}
-			var currentPoints = 0;
-			for (var multiplier in filter) {
-				if (Array.isArray(rankings[ranking][multiplier])) currentPoints += utils.average(rankings[ranking][multiplier]) * filter[multiplier];
-				else if (typeof(rankings[ranking][multiplier]) == "boolean") currentPoints += (rankings[ranking][multiplier] ? filter[multiplier] : 0);
-				else currentPoints += rankings[ranking][multiplier] * filter[multiplier];
-			}
-			currentObj['points'] = Math.round(currentPoints);
-			points.push(currentObj);
-		}
+			for(filter in filters){
+				var currentPoints = 0;
+				for (var multiplier in filters[filter]) {
+					if (Array.isArray(rankings[ranking][multiplier])) currentPoints += utils.average(rankings[ranking][multiplier]) * filters[filter][multiplier];
+					else if (typeof(rankings[ranking][multiplier]) == "boolean") currentPoints += (rankings[ranking][multiplier] ? filters[filter][multiplier] : 0);
+					else currentPoints += rankings[ranking][multiplier] * filters[filter][multiplier];
 
-		var index = 0;
-		function asyncForLoop() {
-			if (index == points.length) {
-				points.sort(function(a,b) {
-					return b.points - a.points;
-				});
-				res.render('teamranking', {
-					points: points,
-					goals: req.query.filter == "goals",
-					totalpoints: req.query.filter == "totalpoints",
-					defense: req.query.filter == "defense",
-					climb: req.query.filter == "climb"
-				});
-			} else {
-				TBA.getImage(points[index]["team"], image => {
-					points[index++]["image"] = image;
-					asyncForLoop();
-				});
+				}
+				currentObj[filter] = Math.round(currentPoints);
 			}
+			points.push(currentObj);
+
 		}
-		asyncForLoop();
+		filter=req.query.filter
+		if(filter == undefined) filter = 'points';
+		points.sort(function(a,b) {
+			return b[filter] - a[filter];
+		});
+		res.render('teamranking', {
+			rankings: points,
+			filter: filter,
+			goals: req.query.filter == "goals",
+			points: req.query.filter == "points",
+			defense: req.query.filter == "defense",
+			climb: req.query.filter == "climb"
+		});
 	});
+	
 });
 
 router.get('/csv', utils.ensureAuthenticated, function(req, res) {
@@ -311,6 +294,7 @@ router.get('/new', utils.ensureAuthenticated, function(req, res) {
 router.post('/new', utils.ensureAuthenticated, function(req, res) {
 	req.body.user = res.locals.user.email;
 	delete req.body.action;
+
 	var newObservation = new Observation(req.body);
 
 	Observation.createObservation(newObservation, function(err, user) {
