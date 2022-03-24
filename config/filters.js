@@ -1,21 +1,4 @@
 module.exports = {
-	goals: {
-		'auto_low_goals': 20,
-		'auto_high_goals': 40,
-		'teleop_low_goals': 10,
-		'teleop_high_goals': 20,
-		'shoot_launch_pad': 0,
-		'shoot_tarmac': 0,
-		'shoot_terminal': 0,
-		'shoot_wherever': 0,
-		'speeds': 0,
-		'defense': 0,
-		'driver_skill': 0,
-		'climb_level': 0,
-		'climb_time': 0,
-		'climb_fail': 0,
-		'death_percent': 0
-	},
 	points: {
 		'auto_low_goals': 20,
 		'auto_high_goals': 40,
@@ -33,19 +16,19 @@ module.exports = {
 		'climb_fail': 0,
 		'death_percent': 0
 	},
-	defense: {
-		'auto_low_goals': 0,
-		'auto_high_goals': 0,
-		'teleop_low_goals': 0,
-		'teleop_high_goals': 0,
+	goals: {
+		'auto_low_goals': 20,
+		'auto_high_goals': 40,
+		'teleop_low_goals': 10,
+		'teleop_high_goals': 20,
 		'shoot_launch_pad': 0,
 		'shoot_tarmac': 0,
 		'shoot_terminal': 0,
 		'shoot_wherever': 0,
-		'speeds': 100,
-		'defense': 30,
-		'driver_skill': 50,
-		'climb_level': 10,
+		'speeds': 0,
+		'defense': 0,
+		'driver_skill': 0,
+		'climb_level': 0,
 		'climb_time': 0,
 		'climb_fail': 0,
 		'death_percent': 0
@@ -65,6 +48,23 @@ module.exports = {
 		'climb_level': 10,
 		'climb_time': 0,
 		'climb_fail': 10,
+		'death_percent': 0
+	},
+	defense: {
+		'auto_low_goals': 0,
+		'auto_high_goals': 0,
+		'teleop_low_goals': 0,
+		'teleop_high_goals': 0,
+		'shoot_launch_pad': 0,
+		'shoot_tarmac': 0,
+		'shoot_terminal': 0,
+		'shoot_wherever': 0,
+		'speeds': 100,
+		'defense': 30,
+		'driver_skill': 50,
+		'climb_level': 10,
+		'climb_time': 0,
+		'climb_fail': 0,
 		'death_percent': 0
 	}
 };
