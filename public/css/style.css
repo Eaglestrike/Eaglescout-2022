@@ -21,19 +21,23 @@
 .input-field .prefix.active {
 	color: #1565c0;
 }
-.no-padding {
-	column-gap: 0px;
-}
 .small-table {
 	width: min(100%, 300px) !important;
 }
 .med-text {
-	font-size: 2rem;
+	font-size: 1.75rem;
 	margin-top: 0px;
 	margin-bottom: 10px;
 }
 .alternate-colors:nth-child(even){
-	background-color: lightgrey;
+	background-color: #e0e0e0;
+}
+.stickyy {
+	position: sticky;
+	top: 0;
+	background-color: #1976d2;
+	color: white;
+	
 }
 .info-message {
 	padding: 10px;
@@ -51,6 +55,13 @@
 }
 .content {
   min-height: calc(100vh - 70px);
+}
+#col-small-table {
+	float: left;
+}
+#col-robot-picture {
+	float: left;
+	padding-left: 1.5rem;
 }
 .page-footer {
   position: fixed;
