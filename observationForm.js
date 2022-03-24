@@ -14,24 +14,7 @@ var TBA = require('./TBA');
 - slider [requires data]
 ********************/
 
-var rankingStructure = {
-	place: {
-		name: "Place",
-		data: null
-	},
-	team: {
-		name: "<span class='no-mobile'>Team </span>#",
-		data: "team"
-	},
-	points: {
-		name: "Points",
-		data: "points"
-	},
-	image: {
-		name: "Image",
-		data: "image"
-	}
-}
+
 
 var tableStructure = {
 	team: {
@@ -494,12 +477,12 @@ function getEditObservationHandlebarsHelper(observation, structure, observationI
 	return finalString;
 }
 
-function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, options){
+function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, img, options){
 	var finalString = "";	
 	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Observed Robot Capabilities: </h2>";
 	finalString += "<table>\n<thead>"
-	finalString += "<th class='no-mobile no-padding'>Category</th>\n"
-	finalString += "<th class='no-mobile no-padding'>Maximum</th>\n"
+	finalString += "<th class='no-padding'>Category</th>\n"
+	finalString += "<th class='no-padding'>Maximum</th>\n"
 	finalString += "</thead>\n"
 	for(var category in teamCapabilities){
 		finalString+="<tr class='no-padding alternate-colors'><td class='no-padding'>";
@@ -531,11 +514,11 @@ function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, options){
 		finalString+=teamCapabilities[category]+"</td></tr>";
 	}
 	
-	finalString+="</table></br>";
-	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Average Points Generated Summary: </h2>";
+	finalString += "</table></br>";
+	finalString += "<div><div id='col-small-table'><h2 class= 'med-text blue-text text-darken-4'> Average Points Generated: </h2>";
 	finalString += "<table class='small-table'>\n<thead>"
-	finalString += "<th class='no-mobile no-padding'>Category</th>\n"
-	finalString += "<th class='no-mobile no-padding'>Points</th>\n"
+	finalString += "<th class='no-padding'>Category</th>\n"
+	finalString += "<th class='no-padding'>Points</th>\n"
 	finalString += "</thead>\n"
 	for(var category in teamAverage){
 		finalString+="<tr class='no-padding alternate-colors'><td class='no-padding'>";
@@ -549,7 +532,11 @@ function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, options){
 		finalString+="<b>"+tableStructure["more"]["data"][category]["name"] + "</b></td><td class='no-padding'>";
 		finalString+=points+"</td></tr>";
 	}
-	finalString+="</table>";
+	finalString+="</table></div>";
+	if(img != undefined){
+		finalString+="<div id='col-robot-picture' class='no-mobile'><h2 class='med-text blue-text text-darken-4'> Picture: </h2>";
+		finalString+="<a href='" + img + "' target='_blank'><img src='" + img + "' style='height: 200px'></img></a></div></div>"
+	}
 	return finalString;
 
 }
@@ -601,27 +588,39 @@ function getTableHandlebarsHelper(structure, res, options) {
 }
 
 
-function getRankingHandlebarsHelper(structure, options) {
+function getRankingHandlebarsHelper(structure, filter, options) {
 	var finalString = "<table class='bordered'>\n<thead>\n";
-	for (var category in rankingStructure) finalString += "<th" + (category == "image" ? " class='no-mobile'" : '') + ">" + rankingStructure[category]["name"] + "</th>\n";
+	finalString += "<th class='stickyy'>Place</th>\n";
+	rankingStructure = ['place'];
+	if(structure.length == 0) return;
+	for (var category in structure[0]) {
+		if (category==filter || category=='team') 
+			finalString += "<th class='stickyy'>" + category[0].toUpperCase() + category.slice(1) + "</th>\n";
+		else{
+			finalString += "<th class='no-mobile stickyy'>" + category[0].toUpperCase() + category.slice(1) + "</th>\n";
+		}
+		rankingStructure.push(category);
+	}
+	finalString += "</thead>\n";
 	for (var observation in structure) {
-		finalString += "<tr>";
+		finalString += "<tr class='alternate-colors'>";
 		for (var category in rankingStructure) {
-			var data = rankingStructure[category]["data"];
-			if (category == "place") {
-				finalString += "<td>" + (parseInt(observation) + 1) + "</td>";
-			} else if (category == "team") {
-				finalString += "<td><a href='/scout/list/" + structure[observation][data] + "'>" + structure[observation][data] + "</a></td>";
+			var data = rankingStructure[category];
+			if (data == "place") {
+				finalString += "<td><b>" + (parseInt(observation) + 1) + "</b></td>";
+			} else if (data == "team") {
+				finalString += "<td><b><a href='/scout/list/" + structure[observation][data] + "'>" + structure[observation][data] + "</a></b></td>";
 				continue;
-			} else if (category == "image") {
-				finalString += "<td class='no-mobile'>" + (structure[observation][data] == null ? "none" : "<a href='" + structure[observation][data] + "' target='_blank'><img src='" + structure[observation][data] + "' style='height: 200px'></img></a>") + "</td>";
 			} else {
-				finalString += "<td>" + structure[observation][data] + "</td>";
+				if (filter == data) 
+					finalString += "<td>" + structure[observation][data] + "</td>";
+				else{
+					finalString += "<td class='no-mobile'>" + structure[observation][data] + "</td>";
+				}
 			}
 		}
 		finalString += "</tr>";
 	}
-	finalString += "</thead>\n";
 	finalString += "</table>";
 	return finalString;
 }
