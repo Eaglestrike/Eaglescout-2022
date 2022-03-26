@@ -50,9 +50,9 @@
         <div class="input-field col s12">
             <select id="ranking-filter-select">
                 <option value="">Default</option>
+                <option value="points" {{#if points}} selected {{/if}}>Points</option>
                 <option value="goals" {{#if goals}} selected {{/if}}>Goals</option>
                 <option value="climb" {{#if climb}} selected {{/if}}>Climbing</option>
-                <option value="points" {{#if points}} selected {{/if}}>Points</option>
                 <option value="defense" {{#if defense}} selected {{/if}}>Defense</option>
             </select>
             <label>Select a Filter</label>

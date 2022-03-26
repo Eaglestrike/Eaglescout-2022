@@ -81,23 +81,21 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 			if(typeof(summary.capabilities[key]) == 'object'){
 				robotCapabilities[key] = Math.max(robotCapabilities[key],summary.capabilities[key][observations[observation][key]]);
 			}
-			else{
-				if(summary.capabilities[key] == 'number'){
-					robotCapabilities[key] = Math.max(robotCapabilities[key],parseInt(observations[observation][key]));
-				}
-				else if(summary.capabilities[key] == 'string_arr'){
-					robotCapabilities[key] = removeDuplicates(robotCapabilities[key].concat(observations[observation][key].split(',')));
-				}
-				else if(summary.capabilities[key] == 'match_list'){
-					if(isNaN(parseInt(observations[observation][key]))){
-						if(observations[observation][key] == 'yes'){
-							robotCapabilities[key].push(parseInt(observations[observation]['match']));
-						}
+			if(summary.capabilities[key] == 'number'){
+				robotCapabilities[key] = Math.max(robotCapabilities[key],parseInt(observations[observation][key]));
+			}
+			else if(summary.capabilities[key] == 'string_arr'){
+				robotCapabilities[key] = removeDuplicates(robotCapabilities[key].concat(observations[observation][key].split(',')));
+			}
+			else if(summary.capabilities[key] == 'match_list'){
+				if(isNaN(parseInt(observations[observation][key]))){
+					if(observations[observation][key] == 'yes'){
+						robotCapabilities[key].push(parseInt(observations[observation]['match']));
 					}
-					else{
-						if(observations[observation][key] > 0){
-							robotCapabilities[key].push(parseInt(observations[observation]['match']));
-						}
+				}
+				else{
+					if(observations[observation][key] > 0){
+						robotCapabilities[key].push(parseInt(observations[observation]['match']));
 					}
 				}
 			}
@@ -110,7 +108,6 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 			}
 			else{
 				robotAverages[key] += summary.gamePoints[key] * parseInt(observations[observation][key]);
-
 			}
 		}
 		
@@ -158,86 +155,28 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 		for (var observation in observations) {
 			var team = observations[observation]["team"];
 			if (!(team in rankings)) {
-				// Custom stuff
-				rankings[team] = {
-					'auto_low_goals': [],
-					'auto_high_goals': [],
-					'teleop_low_goals': [],
-					'teleop_high_goals': [],
-					'shoot_launch_pad': false,
-					'shoot_tarmac': false,
-					'shoot_terminal': false,
-					'shoot_wherever': false,
-					'speeds': [],
-					'defense': [],
-					'driver_skill': [],
-					'climb_level': [],
-					'climb_time': [],
-					'climb_fail': [],
-					'death_percent': []
-				}
+				rankings[team] = JSON.parse(JSON.stringify(multipliers.schema));
 			}
-			var time_robot_dead = observations[observation]['teleop_time_robot_died'] == "" ? 0 : parseInt(observations[observation]['teleop_time_robot_died']);
-			rankings[team]['death_percent'].push(time_robot_dead / 150);
 
-			if (!isNaN(parseInt(observations[observation]['auto_low_goals']))) rankings[team]['auto_low_goals'].push(parseInt(observations[observation]['auto_low_goals']));
-			if (!isNaN(parseInt(observations[observation]['auto_high_goals']))) rankings[team]['auto_high_goals'].push(parseInt(observations[observation]['auto_high_goals']));
-			if (!isNaN(parseInt(observations[observation]['teleop_low_goals']))) rankings[team]['teleop_low_goals'].push(parseInt(observations[observation]['teleop_low_goals']));
-			if (!isNaN(parseInt(observations[observation]['teleop_high_goals']))) rankings[team]['teleop_high_goals'].push(parseInt(observations[observation]['teleop_high_goals']));
-			if (!isNaN(parseInt(observations[observation]['driver_skill']))) rankings[team]['driver_skill'].push(parseInt(observations[observation]['driver_skill']));
-			if (!isNaN(parseInt(observations[observation]['time_on_defense']))) rankings[team]['defense'].push((parseInt(observations[observation]['time_on_defense']) > 0)*1);
-			if (observations[observation]['teleop_shoot_balls'] !== undefined) {
-				var intakes_array = observations[observation]['teleop_shoot_balls'].split(",");
-				rankings[team]['shoot_tarmac'] = intakes_array.includes("tarmac");
-				rankings[team]['shoot_launch_pad'] = intakes_array.includes("launch_pad");
-				rankings[team]['shoot_terminal'] = intakes_array.includes("terminal");
-				rankings[team]['shoot_wherever'] = intakes_array.includes("wherever");
+			for(var category in multipliers.structure){
+				if(category == 'games_played') {
+					rankings[team][category]++;
+					continue;
+				}
+				if(observations[observation][category] == null || observations[observation][category] == undefined || observations[observation][category]=="") continue;
+				if(typeof(multipliers.structure[category]) == 'object'){
+					rankings[team][category] += multipliers.structure[category][observations[observation][category]];
+				}
+				else if(multipliers.structure[category] == 'number'){
+					rankings[team][category] += parseInt(observations[observation][category]);
+				}
 				
-			}
-		
-
-			if (observations[observation]['endgame_climb'] !== undefined) {
-				var climb = observations[observation]['endgame_climb'];
-				// Climb = 1, Climb (Leveled) = 2
-				switch (climb){
-					case "low_bar":
-						rankings[team]["climb_level"].push(4);
-						break;
-					case "mid bar":
-						rankings[team]["climb_level"].push(6);
-						break;
-					case "high_bar":
-						rankings[team]["climb_level"].push(10);
-						break;
-					case "traverse_bar":
-						rankings[team]["climb_level"].push(15);
-						break;
-					case "failed":
-						rankings[team]["climb_fail"].push(-1);
-						break;
-					case "no_attempt":
-						rankings[team]["climb_level"].push(0)
-						break;
-				}
-			}
-
-			// Only count speed if time dead is less than 120 seconds
-			if (time_robot_dead < 120 && observations[observation]['speed'] != null && observations[observation]['speed'] != "") {
-				var speed;
-				switch (observations[observation]['speed']) {
-					case "slow": 
-					speed = -1;
-					break;
-					case "medium": 
-					speed = 0;
-					break;
-					case "fast": 
-					speed = 1;
-					break;
-				}
-				rankings[team]['speeds'].push(speed);
+				else if(multipliers.structure[category] == 'num-yes'){
+					rankings[team][category] += (parseInt(observations[observation][category]) > 0) *1;
+				}				
 			}
 		}
+
 		var points = [];
 		for (var ranking in rankings) {
 			var currentObj = {
@@ -246,18 +185,16 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 			for(filter in filters){
 				var currentPoints = 0;
 				for (var multiplier in filters[filter]) {
-					if (Array.isArray(rankings[ranking][multiplier])) currentPoints += utils.average(rankings[ranking][multiplier]) * filters[filter][multiplier];
-					else if (typeof(rankings[ranking][multiplier]) == "boolean") currentPoints += (rankings[ranking][multiplier] ? filters[filter][multiplier] : 0);
-					else currentPoints += rankings[ranking][multiplier] * filters[filter][multiplier];
-
+					currentPoints+=(rankings[ranking][multiplier]*filters[filter][multiplier]);
 				}
+				currentPoints/=rankings[ranking]['games_played']
 				currentObj[filter] = Math.round(currentPoints);
 			}
 			points.push(currentObj);
-
 		}
 		filter=req.query.filter
 		if(filter == undefined) filter = 'points';
+		if(filters[filter] == undefined) filter = 'points';
 		points.sort(function(a,b) {
 			return b[filter] - a[filter];
 		});
@@ -374,9 +311,7 @@ router.get('/delobservation/:id', utils.ensureAuthenticated, function(req, res) 
 router.post('/saveobservation/:id', utils.ensureAuthenticated, function(req, res) {
 	req.body.user = res.locals.user.email;
 	delete req.body.action;
-
-	console.log(req.body);
-
+	
 	Observation.findOneAndUpdate({
 		"_id": req.params.id
 	}, req.body, function (err) {

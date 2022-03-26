@@ -602,6 +602,7 @@ function getRankingHandlebarsHelper(structure, filter, options) {
 		rankingStructure.push(category);
 	}
 	finalString += "</thead>\n";
+
 	for (var observation in structure) {
 		finalString += "<tr class='alternate-colors'>";
 		for (var category in rankingStructure) {

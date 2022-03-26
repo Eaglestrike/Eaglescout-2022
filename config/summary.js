@@ -1,4 +1,12 @@
 module.exports = { 
+
+    /* 
+    Types of input
+    number: takes number adds number
+    string_arr: append string array and remove duplicate
+    (dictionary): to compare strings to each other, key is input, value is value
+    match_list: record matches performed
+    */
     capabilities: {
         'auto_taxi': {'yes': 1, 'no': 0},
         'auto_low_goals': 'number',
