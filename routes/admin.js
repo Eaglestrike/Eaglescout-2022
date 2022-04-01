@@ -127,7 +127,11 @@ router.get("/userlist", utils.ensureAdmin, function(req, res) {
 });
 
 router.get("/", utils.ensureAdmin, function(req, res) {
-  res.render("admin");
+  TBA.getEvents(events => {
+    res.render("admin", {
+      events: events
+    });
+  });
 });
 
 router.get("/event", utils.ensureAdmin, function(req, res) {

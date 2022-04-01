@@ -24,6 +24,12 @@
 .small-table {
 	width: min(100%, 300px) !important;
 }
+.modal {
+	overflow: visible;
+}
+.modal-body {
+	overflow-y: visible;
+}
 .no-padding {
 	margin: 0 0 0 0;
 }

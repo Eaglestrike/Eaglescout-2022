@@ -22,7 +22,13 @@ $("#ranking-filters-submit").click(function() {
 	}
 	window.location.replace("/scout/teamranking" + finalStr);
 });
-
+$("#export-csv").click(function() {
+	var finalStr = "";
+	if ($("#select-events").val() != "" && $("#select-events").val() != undefined) {
+		finalStr+="?events="+$("#select-events").val();
+	} 
+	window.location.replace("/scout/csv" + finalStr);
+});
 $(".increment_number_minus_button").click(function() {
 	var element_for = $(this).data("for");
 	var new_val = parseInt($('input[name="' + element_for + '"]').val()) - 1;

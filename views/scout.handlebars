@@ -61,6 +61,27 @@
             </div>
         </div>
         <br><br>
-        <a class="waves-effect waves-light btn-large green" href="/scout/csv"><i class="material-icons left">file_download</i>Export Observations to CSV</a>
+        <a class="waves-effect waves-light btn-large green modal-trigger" href="#export-modal"><i class="material-icons left">file_download</i>Export Observations to CSV</a>
+	</div>
+</div>
+<div id="export-modal" class="modal">
+    <div class="modal-content">
+    <h1 class="header text-darken-4">Select Events To Export</h1>
+	<select id="select-events" multiple>
+        {{#if events}}
+            {{#each events}}
+                {{#if current }}
+                    <option value="{{ key }}" selected>{{ name }}</option>
+                {{else}}
+                    <option value="{{ key }}">{{ name }}</option>
+                {{/if}}
+            {{/each}}
+        {{/if}}
+    </select>
+    </div>
+	<div class="modal-footer">
+    <button id="export-csv" class="btn waves-effect waves-light red">Export!</button>
+
+    {{!-- <a href="/scout/csv" class="waves-effect waves-green btn-flat">Export Observations</a> --}}
 	</div>
 </div>

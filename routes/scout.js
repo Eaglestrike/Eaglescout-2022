@@ -241,11 +241,26 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 });
 
 router.get('/csv', utils.ensureAuthenticated, function(req, res) {
+	var cur_events = req.query.events;
+	if(cur_events == undefined) cur_events = "all";
+	events = cur_events.split(',');
+	var filter = {
+		$or: [
+		]
+	};
+	for(var event in events){
+		if(events[event] == "all"){
+			cur_events = "all";
+			filter = {};
+			break;
+		}
+		filter.$or.push({'competition': events[event]});
+	}
 	res.writeHead(200, {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename=observations.csv'
+        'Content-Disposition': 'attachment; filename='+'observations.csv'
     });
-    Observation.find({}).csv(res);
+    Observation.find(filter).csv(res);
 });
 
 router.get('/new', utils.ensureAuthenticated, function(req, res) {
@@ -353,7 +368,16 @@ router.post('/saveobservation/:id', utils.ensureAuthenticated, function(req, res
 });
 
 router.get('/', utils.ensureAuthenticated, function(req, res) {
-	res.render('scout');
+	TBA.getEvents(events => {
+		events.unshift({
+			"key": "all",
+			"name": "All Events",
+			"current": false
+		})
+		res.render("scout", {
+			events: events
+		});
+	});
 });
 
 module.exports = router;
