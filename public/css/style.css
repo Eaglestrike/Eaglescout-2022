@@ -24,10 +24,12 @@
 .small-table {
 	width: min(100%, 300px) !important;
 }
+.no-padding {
+	margin: 0 0 0 0;
+}
 .med-text {
 	font-size: 1.75rem;
 	margin-top: 0px;
-	margin-bottom: 10px;
 }
 .alternate-colors:nth-child(even){
 	background-color: #e0e0e0;

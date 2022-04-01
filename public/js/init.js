@@ -12,12 +12,15 @@ $(document).ready(function() {
 $(document).ready(function(){
 	$('.modal').modal();
 });
-$("#ranking-filter-select").change(function() {
-	if ($(this).val() == "") {
-		window.location.replace("/scout/teamranking");
-	} else {
-		window.location.replace("/scout/teamranking?filter=" + $(this).val());
+$("#ranking-filters-submit").click(function() {
+	var finalStr = "";
+	if ($("#ranking-filter-select").val() != "" && $("#ranking-filter-select").val() != undefined) {
+		finalStr+="?filter="+$("#ranking-filter-select").val();
+	} 
+	if($("#ranking-event-select").val() != "" && $("#ranking-event-select").val() != undefined) {
+		finalStr += ((finalStr == "") ? "?":"&") + "events=" + $("#ranking-event-select").val();
 	}
+	window.location.replace("/scout/teamranking" + finalStr);
 });
 
 $(".increment_number_minus_button").click(function() {

@@ -150,7 +150,21 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 });
 
 router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
-	Observation.find({}, function(err, observations) {
+	var cur_events = req.query.events;
+	if(cur_events == undefined) cur_events = utils.getCurrentEvent();
+	cur_events = cur_events.split(',');
+	var filter = {
+		$or: [
+		]
+	};
+	for(var event in cur_events){
+		if(cur_events[event] == "all"){
+			filter = {};
+			break;
+		}
+		filter.$or.push({'competition': cur_events[event]});
+	}
+	Observation.find(filter, function(err, observations) {
 		var rankings = {};
 		for (var observation in observations) {
 			var team = observations[observation]["team"];
@@ -176,7 +190,6 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				}				
 			}
 		}
-
 		var points = [];
 		for (var ranking in rankings) {
 			var currentObj = {
@@ -198,14 +211,31 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 		points.sort(function(a,b) {
 			return b[filter] - a[filter];
 		});
-		res.render('teamranking', {
-			rankings: points,
-			filter: filter,
-			goals: req.query.filter == "goals",
-			points: req.query.filter == "points",
-			defense: req.query.filter == "defense",
-			climb: req.query.filter == "climb"
-		});
+		TBA.getEvents(events => {
+			events.unshift({
+				"key": "all",
+				"name": "All Events",
+				"current": false
+			})
+			for(var i in events){
+				events[i].current = false;			
+				for(var event in cur_events){
+					if(events[i].key == cur_events[event]){
+						events[i].current = true;
+						continue;
+					}
+				}
+			}
+			res.render("teamranking", {
+			  	events: events,
+			  	rankings: points,
+				filter: filter,
+				goals: req.query.filter == "goals",
+				points: req.query.filter == "points",
+				defense: req.query.filter == "defense",
+				climb: req.query.filter == "climb"
+			});
+		  });
 	});
 	
 });
