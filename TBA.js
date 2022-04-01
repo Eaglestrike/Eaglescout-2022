@@ -23,6 +23,10 @@ module.exports.getEvents = function(callback) {
 					"current": event.key == utils.getCurrentEvent()
 				}
 			});
+
+			events.sort(function(a,b){
+				return (a.name<b.name) ? -1 : 1;
+			});
 			events.splice(0, 0, {
 				"key": "practice",
 				"name": "Practice Competition",
