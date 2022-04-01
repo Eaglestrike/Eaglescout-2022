@@ -60,7 +60,7 @@
 	<div class="modal-content">
 		<h4>Are you sure you want to clear all observations?</h4>
 		<p>This action cannot be undone. It is recommended that you "Export Observations" before clearing.</p>
-        <h1 class="header text-darken-4 med-text no-padding">Select Events To Export</h1>
+        <h1 class="header text-darken-4 med-text no-padding">Select Events To Export/Clear</h1>
         <select id="select-events" multiple>
             {{#if events}}
                 {{#each events}}
@@ -75,6 +75,7 @@
     </div>
 	<div class="modal-footer">
     <button id="export-csv" class="btn waves-effect waves-light red">Export!</button>
-		<a href="/admin/clearobservations" class="modal-close waves-effect waves-red btn-flat">Clear Observations</a>
+	<button id="clear-observations" class="btn waves-effect waves-light orange">Clear Observations</button>
+	{{!-- <a href="/admin/clearobservations" class="modal-close waves-effect waves-red btn-flat">Clear Observations</a> --}}
 	</div>
 </div>

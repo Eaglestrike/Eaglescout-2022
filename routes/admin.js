@@ -15,7 +15,22 @@ router.get("/bulkimport", utils.ensureAdmin, function(req, res) {
 });
 
 router.get("/clearobservations", utils.ensureAdmin, function(req, res) {
-  Observation.remove({}, (err, response) => {
+  var cur_events = req.query.events;
+  //default is to remove current event?
+	if(cur_events == undefined) cur_events = utils.getCurrentEvent();
+	cur_events = cur_events.split(',');
+	var filter = {
+		$or: [
+		]
+	};
+	for(var event in cur_events){
+		if(cur_events[event] == "all"){
+			filter = {};
+			break;
+		}
+		filter.$or.push({'competition': cur_events[event]});
+	}
+  Observation.remove(filter, (err, response) => {
     req.flash(
       "success_msg",
       `Successfully cleared ${response.n} observations.`
