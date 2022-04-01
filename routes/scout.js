@@ -12,24 +12,70 @@ var summary = require("../config/summary");
 
 
 router.get('/list', utils.ensureAuthenticated, function(req, res) {
-	Observation.find({
-	}, function(err, observations) {
+	var cur_events = req.query.events;
+	if(cur_events == undefined) cur_events = utils.getCurrentEvent();
+	cur_events = cur_events.split(',');
+	var filter = {
+		$or: [
+		]
+	};
+	for(var event in cur_events){
+		if(cur_events[event] == "all"){
+			filter = {};
+			break;
+		}
+		filter.$or.push({'competition': cur_events[event]});
+	}
+	Observation.find(filter
+	, function(err, observations) {
 		observations.sort(function(a,b) {
 			return a.team - b.team;
 		});
-
-		// observations = [];
-		res.render("list", {
-			observations: observations,
-			res: res
+		TBA.getEvents(events => {
+			events.unshift({
+				"key": "all",
+				"name": "All Events",
+				"current": false
+			})
+			for(var i in events){
+				events[i].current = false;			
+				for(var event in cur_events){
+					if(events[i].key == cur_events[event]){
+						events[i].current = true;
+						continue;
+					}
+				}
+			}
+			res.render("list", {
+				events: events,
+				observations: observations,
+				res: res
+			});
 		});
+		// observations = [];
+		
 	});
 })
 
 router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
-	Observation.find({
-		team: req.params.team
-	}, function(err, observations) {
+	var cur_events = req.query.events;
+	if(cur_events == undefined) cur_events = utils.getCurrentEvent();
+	cur_events = cur_events.split(',');
+	var filter = {
+		$or: [
+		]
+	};
+	for(var event in cur_events){
+		if(cur_events[event] == "all"){
+			filter = {};
+			break;
+		}
+		filter.$or.push({'competition': cur_events[event]});
+	}
+	filter['team']= req.params.team;
+	Observation.find(
+		filter
+	, function(err, observations) {
 		observations.sort(function(a,b) {
 			return a.team - b.team;
 		});
@@ -125,7 +171,6 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 	}
 	sum = 0;
 	
-	
 	for(var key in robotAverages){
 		if(key == 'points_generated'){
 			continue;
@@ -135,18 +180,34 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		
 	}
 	robotAverages['points_generated'] = sum/games_played;
-	TBA.getImage(req.params.team, image => {
-		res.render('list', {
-			teamAverage: robotAverages,
-			teamCapabilities: robotCapabilities,
-			observations: observations,
-			res: res,
-			team: req.params.team,
-			img: image
-		});
-	});
-		
-	});
+	TBA.getEvents(events => {
+		events.unshift({
+			"key": "all",
+			"name": "All Events",
+			"current": false
+		})
+		for(var i in events){
+			events[i].current = false;			
+			for(var event in cur_events){
+				if(events[i].key == cur_events[event]){
+					events[i].current = true;
+					continue;
+				}
+			}
+		}
+		TBA.getImage(req.params.team, image => {
+			res.render('list', {
+				events: events,
+				teamAverage: robotAverages,
+				teamCapabilities: robotCapabilities,
+				observations: observations,
+				res: res,
+				team: req.params.team,
+				img: image
+			});
+		});		
+	});	
+	});	
 });
 
 router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
@@ -235,7 +296,7 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				defense: req.query.filter == "defense",
 				climb: req.query.filter == "climb"
 			});
-		  });
+		});
 	});
 	
 });

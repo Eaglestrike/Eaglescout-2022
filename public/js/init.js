@@ -22,6 +22,13 @@ $("#ranking-filters-submit").click(function() {
 	}
 	window.location.replace("/scout/teamranking" + finalStr);
 });
+$("#list-filters-submit").click(function() {
+	var finalStr = "";
+	if($("#list-events-select").val() != "" && $("#list-events-select").val() != undefined) {
+		finalStr += ((finalStr == "") ? "?":"&") + "events=" + $("#list-events-select").val();
+	}
+	window.location.replace(window.location.pathname + finalStr);
+});
 $("#export-csv").click(function() {
 	var finalStr = "";
 	if ($("#select-events").val() != "" && $("#select-events").val() != undefined) {
