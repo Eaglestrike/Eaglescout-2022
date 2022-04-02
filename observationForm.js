@@ -574,7 +574,9 @@ function getTableHandlebarsHelper(structure, res, options) {
 				}
 				finalString += "</td>";
 			} else if (category == "team") {
-				finalString += "<td><a href='/scout/list/" + structure[observation][data] + "'>" + structure[observation][data] + "</a></td>";
+				finalString += "<td><a href='/scout/list/" + structure[observation][data] + "'><b class='med-text'>" + structure[observation][data] + "</b></a><br>";
+				finalString +="<a class='mobile-only " + (res.locals.user.admin || res.locals.user.email == structure[observation]["user"] ? "" : " disabled") + "' href='/scout/editobservation/" + structure[observation]["_id"] + "'>Edit <br></a>"
+				finalString += "<a class='mobile-only modal-trigger open-modal" + (res.locals.user.admin || res.locals.user.email == structure[observation]["user"] ? "" : " disabled") + "' href='#confirm-delete-modal' data-id='" + structure[observation]["_id"] + "'>Delete</a></td>";
 			} else {
 				finalString += "<td>" + structure[observation][data] + "</td>";
 			}

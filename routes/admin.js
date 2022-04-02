@@ -14,6 +14,10 @@ router.get("/bulkimport", utils.ensureAdmin, function(req, res) {
   res.render("bulkimport");
 });
 
+router.get("/schedule",utils.ensureAdmin, function(req,res) {
+  
+})
+
 router.get("/clearobservations", utils.ensureAdmin, function(req, res) {
   var cur_events = req.query.events;
   //default is to remove current event?
