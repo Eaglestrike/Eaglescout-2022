@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-var mongo = require('mongodb');
-var mongoose = require('mongoose');
-
+const mongo = require('mongodb');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 
 
 require('dotenv').config();
@@ -12,6 +12,8 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json())
+
 
 mongoose.connect('mongodb://localhost/eaglescout');
 var db = mongoose.connection;

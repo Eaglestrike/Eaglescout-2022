@@ -1,6 +1,5 @@
-var utils = require("../utils")
+var utils = require("../utils/utils")
 const mongoose = require('mongoose');
-const { getCurrentGame } = require("../utils/utils");
 
 
 var observationForm = require(`../games/${utils.getCurrentGame()}/observationForm.js`)
