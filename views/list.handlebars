@@ -54,7 +54,7 @@
         <p class="center"><b>* Sorted by team number</b></p>
         {{/if}}
         <div class="input-field col s12">
-            <select id="list-events-select" multiple>
+            <select id="events-select" multiple>
                 {{#if events}}
                     {{#each events}}
                         {{#if current }}
@@ -65,10 +65,10 @@
                     {{/each}}
                 {{/if}}
             </select>
-        <label for="list-events-select">Select Events</label>
+        <label for="events-select">Select Events</label>
         </div>
         <div class="center">
-            <button id="list-filters-submit" class="btn waves-effect waves-light red">Apply Filters</button>
+            <button id="filters-submit" class="btn waves-effect waves-light red">Apply Filters</button>
         </div>
         {{#if team}}
         {{{teamSummary teamAverage teamCapabilities img}}}

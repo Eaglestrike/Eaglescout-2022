@@ -628,6 +628,7 @@ function getRankingHandlebarsHelper(structure, filter, options) {
 	return finalString;
 }
 
+
 module.exports = {
 	getTeamSummaryHandlebarsHelper: getTeamSummaryHandlebarsHelper,
 	getObservationFormSchema: getObservationFormSchema,
@@ -635,5 +636,5 @@ module.exports = {
 	getObservationFormHandlebarsHelper: getObservationFormHandlebarsHelper,
 	getEditObservationHandlebarsHelper: getEditObservationHandlebarsHelper,
 	getTableHandlebarsHelper: getTableHandlebarsHelper,
-	getRankingHandlebarsHelper: getRankingHandlebarsHelper
+	getRankingHandlebarsHelper: getRankingHandlebarsHelper,
 };

@@ -8,8 +8,8 @@ var userlist = require("../userlist.js");
 var filters = require("../config/filters");
 var multipliers = require("../config/multipliers");
 var summary = require("../config/summary");
-
-
+var game = require("../config/game.js");
+var chartConfig = require("../config/chartConfig.js")
 
 router.get('/list', utils.ensureAuthenticated, function(req, res) {
 	var cur_events = req.query.events;
@@ -73,8 +73,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		filter.$or.push({'competition': cur_events[event]});
 	}
 	filter['team']= req.params.team;
-	Observation.find(
-		filter
+	Observation.find(filter
 	, function(err, observations) {
 		observations.sort(function(a,b) {
 			return a.team - b.team;
@@ -150,10 +149,10 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		for(var key in robotAverages){
 			if(observations[observation][key] == null || observations[observation][key] == undefined ||observations[observation][key]=="") continue;
 			if(typeof(summary.capabilities[key]) == 'object'){
-				robotAverages[key] += summary.gamePoints[key][observations[observation][key]];
+				robotAverages[key] += game.points[key][observations[observation][key]];
 			}
 			else{
-				robotAverages[key] += summary.gamePoints[key] * parseInt(observations[observation][key]);
+				robotAverages[key] += game.points[key] * parseInt(observations[observation][key]);
 			}
 		}
 		
@@ -184,17 +183,8 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		events.unshift({
 			"key": "all",
 			"name": "All Events",
-			"current": false
+			"current": cur_events.includes('all')
 		})
-		for(var i in events){
-			events[i].current = false;			
-			for(var event in cur_events){
-				if(events[i].key == cur_events[event]){
-					events[i].current = true;
-					continue;
-				}
-			}
-		}
 		TBA.getImage(req.params.team, image => {
 			res.render('list', {
 				events: events,
@@ -205,9 +195,113 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 				team: req.params.team,
 				img: image
 			});
-		});		
+		}, cur_events);		
 	});	
 	});	
+});
+
+router.get('/graphic', utils.ensureAuthenticated, function(req,res) {
+	var cur_events = req.query.events;
+	if(cur_events == undefined) cur_events = utils.getCurrentEvent();
+	cur_events = cur_events.split(',');
+	var filter = {
+		$or: [
+		]
+	};
+	for(var event in cur_events){
+		if(cur_events[event] == "all"){
+			filter = {};
+			break;
+		}
+		filter.$or.push({'competition': cur_events[event]});
+	}
+	Observation.find(filter, function(err, observations) {
+		var rankings = {};
+		for (var observation in observations) {
+			var team = observations[observation]["team"];
+			if (!(team in rankings)) {
+				rankings[team] = {};
+				for(var category in game.points){
+					rankings[team][category] = 0;
+				}
+				rankings[team]['games_played'] = 0;
+			}
+			rankings[team]['games_played']++;
+			for(var category in game.points){
+				if(observations[observation][category] == null || observations[observation][category] == undefined || observations[observation][category]=="") continue;
+				if(typeof(game.points[category]) == 'object'){
+					rankings[team][category] += game.points[category][observations[observation][category]];
+				}
+				else {
+					rankings[team][category] += parseInt(observations[observation][category]) * game.points[category];
+				}
+			}
+		}
+		var points = [];
+		for (var team in rankings) {
+			for(var category in game.points){
+				rankings[team][category] /= rankings[team]['games_played'];
+			}
+			var currentObj = {
+				team: team
+			}
+			var total = 0;
+			var autoPoints = 0;
+			var teleopPoints = 0;
+			var endgamePoints = 0;
+			for(var category in game.points){
+				if(category.split("_")[0] == 'auto') {
+					autoPoints += rankings[team][category]
+				}
+				else if(category.split("_")[0] == 'teleop') {
+					teleopPoints += rankings[team][category]
+				}
+				else if(category.split("_")[0] == 'endgame') {
+					endgamePoints += rankings[team][category]
+				}
+			}
+			total = autoPoints+teleopPoints+endgamePoints;
+			currentObj['points'] = total;
+			currentObj['auto'] = autoPoints;
+			currentObj['teleop'] = teleopPoints;
+			currentObj['endgame'] = endgamePoints;
+			points.push(currentObj);
+		}
+		points.sort(function(a,b) {
+			return b['points'] - a['points'];
+		});
+		const data = {
+			labels: points.map(currentTeam => currentTeam.team),
+			data: [
+				{
+					label: 'Auto',
+					data: points.map(currentTeam => currentTeam.auto),
+					backgroundColor: 'rgb(255, 99, 132)',
+				},
+				{
+					label: 'Teleop',
+					data: points.map(currentTeam => currentTeam.teleop),
+					backgroundColor: 'rgb(54, 162, 235)',
+				},
+				{
+					label: 'Endgame',
+					data: points.map(currentTeam => currentTeam.endgame),
+					backgroundColor: 'rgb(255, 205, 86)',
+				}
+			]
+		}
+		TBA.getEvents(events => {
+			events.unshift({
+				"key": "all",
+				"name": "All Events",
+				"current": cur_events.includes('all')
+			})
+			res.render("graphic", {
+				events: events,
+				rankingChart: data
+			});
+		}, cur_events);
+	});
 });
 
 router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
@@ -276,27 +370,18 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 			events.unshift({
 				"key": "all",
 				"name": "All Events",
-				"current": false
+				"current": cur_events.includes('all')
 			})
-			for(var i in events){
-				events[i].current = false;			
-				for(var event in cur_events){
-					if(events[i].key == cur_events[event]){
-						events[i].current = true;
-						continue;
-					}
-				}
-			}
 			res.render("teamranking", {
 			  	events: events,
 			  	rankings: points,
 				filter: filter,
-				goals: req.query.filter == "goals",
-				points: req.query.filter == "points",
-				defense: req.query.filter == "defense",
-				climb: req.query.filter == "climb"
+				goals: filter == "goals",
+				points: filter == "points",
+				defense: filter == "defense",
+				climb: filter == "climb"
 			});
-		});
+		}, cur_events);
 	});
 	
 });
@@ -392,26 +477,26 @@ router.get('/editobservation/:id', utils.ensureAuthenticated, function(req, res)
 });
 
 router.get('/delobservation/:id', utils.ensureAuthenticated, function(req, res) {
-	if (res.locals.user.admin) {
-		Observation.findOneAndRemove({
-			"_id": req.params.id
-		}, function(err, observation) {
-			if (err || observation == null) {
-				req.flash('error_msg', 'Unknown observation ID!');
-			}
-			res.redirect('/scout/list');
-		});
-	} else {
-		Observation.findOneAndRemove({
-			"_id": req.params.id,
-			user: res.locals.user.email
-		}, function(err, observation) {
-			if (err || observation == null) {
-				req.flash('error_msg', 'Insufficient permissions OR unknown observation ID!');
-			}
-			res.redirect('/scout/list');
-		});
-	}
+		if (res.locals.user.admin) {
+			Observation.findOneAndRemove({
+				"_id": req.params.id
+			}, function(err, observation) {
+				if (err || observation == null) {
+					req.flash('error_msg', 'Unknown observation ID!');
+				}
+				res.redirect('/scout/list');
+			});
+		} else {
+			Observation.findOneAndRemove({
+				"_id": req.params.id,
+				user: res.locals.user.email
+			}, function(err, observation) {
+				if (err || observation == null) {
+					req.flash('error_msg', 'Insufficient permissions OR unknown observation ID!');
+				}
+				res.redirect('/scout/list');
+			});
+		}
 });
 
 router.post('/saveobservation/:id', utils.ensureAuthenticated, function(req, res) {

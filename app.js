@@ -3,7 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
-var expressValidator = require('express-validator');
+// var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var session = require('express-session');
 var passport = require('passport');
@@ -13,6 +13,9 @@ var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/eaglescout');
 var db = mongoose.connection;
+db.once('open', () => {
+    console.log("MongoDB database connection established successfully")
+})
 var login = require('./routes/login');
 var scout = require('./routes/scout');
 var admin = require('./routes/admin');
@@ -20,6 +23,7 @@ var account = require('./routes/account');
 var utils = require('./utils');
 var observationForm = require('./observationForm');
 var userlist = require('./userlist');
+var renderChart = require('./renderCharts.js')
 
 var User = require('./models/user');
 User.createAdminUserIfNotExists();
@@ -33,7 +37,8 @@ var hbs = exphbs.create({
         editForm: observationForm.getEditObservationHandlebarsHelper,
         table: observationForm.getTableHandlebarsHelper,
         ranking: observationForm.getRankingHandlebarsHelper,
-        userlist: userlist.getUserListHandlebarsHelper
+        userlist: userlist.getUserListHandlebarsHelper,
+        renderChart: renderChart.renderChartsHandlebarsHelper,
     }
 });
 
@@ -56,22 +61,22 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(expressValidator({
-    errorFormatter: function(param, msg, value) {
-        var namespace = param.split('.')
-        , root    = namespace.shift()
-        , formParam = root;
+// app.use(expressValidator({
+//     errorFormatter: function(param, msg, value) {
+//         var namespace = param.split('.')
+//         , root    = namespace.shift()
+//         , formParam = root;
 
-        while(namespace.length) {
-            formParam += '[' + namespace.shift() + ']';
-        }
-        return {
-            param : formParam,
-            msg   : msg,
-            value : value
-        };
-    }
-}));
+//         while(namespace.length) {
+//             formParam += '[' + namespace.shift() + ']';
+//         }
+//         return {
+//             param : formParam,
+//             msg   : msg,
+//             value : value
+//         };
+//     }
+// }));
 
 app.use(flash());
 
@@ -91,6 +96,7 @@ app.use('/scout/list', scout);
 app.use('/scout/editobservation', scout);
 app.use('/scout/teamranking', scout);
 app.use('/scout/new', scout);
+app.use('/scout/graphic', scout);
 app.use('/admin', admin);
 app.use('/admin/register', admin);
 app.use('/admin/bulkimport', admin);

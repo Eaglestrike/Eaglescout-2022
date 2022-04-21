@@ -3,7 +3,9 @@ const config = require("./config/config");
 const utils = require("./utils");
 const keys = require("./keys");
 
-module.exports.getEvents = function(callback) {
+module.exports.getEvents = function(callback, cur_events) {
+	if(cur_events === undefined) cur_events = [utils.getCurrentEvent];
+	if(cur_events.length === 0) cur_events = [utils.getCurrentEvent];
 	const url = config.TBA_URL + "/events/2022/simple?X-TBA-Auth-Key=" + keys.TBA_API_KEY;
 	https.get(url, res => {
 		var body = "";
@@ -20,7 +22,7 @@ module.exports.getEvents = function(callback) {
 				return {
 					"key": event.key,
 					"name": event.name,
-					"current": event.key == utils.getCurrentEvent()
+					"current": cur_events.includes(event.key)
 				}
 			});
 
