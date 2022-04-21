@@ -1,0 +1,19 @@
+Reorganize database
+
+
+
+Structure
+
+Events:
+    event 1
+        observations
+        teams
+            summary at event
+    event 2
+        observations
+        teams
+            summary at event
+            
+teams
+    team 1
+        event attended
