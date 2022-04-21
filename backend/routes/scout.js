@@ -4,7 +4,9 @@ const router = express.Router();
 const Observation = require("../models/observation.model");
 const utils = require('../utils/utils');
 const observationForm = require(`../games/${utils.getCurrentGame()}/observationForm`);
-
+/*
+Change user stuff cuz it kinda bad rn
+*/
 router.use((req,res,next) =>{
     utils.ensureAuthenticated(req, res, next);
 })
@@ -48,7 +50,6 @@ router.route('/new').get((req,res) => {
         req.flash('error_msg', 'Unable to add observation.');
     })
 })
-
 
 router.route('/observation/:id').get((req,res) => {
     Observation.findById(req.params.id)

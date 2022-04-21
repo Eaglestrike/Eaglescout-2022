@@ -1,39 +1,24 @@
-var fs = require('fs');
-
+const fs = require('fs');
 module.exports = {
-	ensureAuthenticated: (req, res, next) => {
-		if (req.isAuthenticated()) {
-			return next();
-		} else {
-			req.flash('error_msg', 'You are not logged in.');
-			res.redirect('/');
-		}
-	},
-	redirectIfLoggedIn: (req, res, next) => {
-		if (req.isAuthenticated()) {
-			res.redirect('/scout')
-		} else {
-			return next();
-		}
-	},
-	ensureAdmin: (req, res, next) => {
-		if (req.isAuthenticated() && res.locals.user.admin) {
-			return next();
-		} else {
-			req.flash('error_msg', 'You are not an admin.');
-			res.redirect('/scout');
-		}
-	},
-	getCurrentEvent: () => {
-		var buffer = fs.readFileSync('./config/state.db');
-		var json = JSON.parse(buffer.toString());
+
+	getCurrentEvent: async () => {
+		var buffer = await fs.readFile("../config/state.json", "utf-8")
+		var json = JSON.parse(buffer);
 		return json["current_event"];
 	},
-    getCurrentGame: () => {
-        var buffer = fs.readFileSync('./config/state.db');
-		var json = JSON.parse(buffer.toString());
+    getCurrentGame: async () => {
+		var buffer = await fs.readFile("../config/state.json", "utf-8")
+		var json = JSON.parse(buffer);
 		return json["current_game"];
-    }
+    },
+	genConfirmationCode: (len) => {
+		var letters="0123456789abcdefghijklmnopqrstuvwxyz"
+		var code = "";
+		for(var i = 0; i < len; i++){
+			code += String.fromCharCode(letters[Math.floor(Math.random()*36)])
+		}
+		return code;
+	}
 };
 
 

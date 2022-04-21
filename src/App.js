@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import React from 'react'
 import {BrowserRouter as Router, Route } from "react-router-dom"
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
@@ -9,10 +10,10 @@ function App() {
       <br/>
       <Route path="/scout" exact component={scout} />
       <Route path="/scout/list" exact component={scout} />
-      <Route path="/scout/observation" exact component={scout} />
-      <Route path="/scout/editobservation" exact component={scout} />
+      <Route path="/scout/observation/:id" exact component={scout} />
+      <Route path="/scout/editobservation/:id" exact component={scout} />
       <Route path="/scout/new" exact component={scout} />
-      <Route path="/scout/teamranking" exact component={scout} />
+      {/* <Route path="/scout/teamranking" exact component={scout} /> */}
       <Route path="/admin" exact component={scout} />
       <Route path="/admin" exact component={scout} />
       <Route path="/" exact component={scout} />

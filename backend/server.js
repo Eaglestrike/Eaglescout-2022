@@ -24,7 +24,7 @@ db.once('open', () => {
 const login = require('./routes/login');
 const scout = require('./routes/scout');
 const admin = require('./routes/admin');
-const account = require('./routes/account');
+const account = require('./routes/user');
 
   
 
