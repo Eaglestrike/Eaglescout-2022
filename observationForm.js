@@ -180,6 +180,16 @@ var observationFormSchema = {
 		title: "[Teleop] High goals scored",
 		subtitle: "How many balls were successfully scored in the high goal during teleop?"
 	},
+	teleop_shot_accuracy: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 0,
+			"max": 100
+		},
+		title: "[Teleop] Shot Accuracy",
+		subtitle: "Approximate their shot accuracy as a percentage"
+	},
 	teleop_eject_balls: {
 		type: String,
 		input: "checkbox",
