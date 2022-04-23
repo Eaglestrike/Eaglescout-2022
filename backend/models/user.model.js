@@ -11,6 +11,14 @@ var UserSchema = mongoose.Schema({
 		type: String,
 		index: true
 	},
+	name: {
+		first: {
+			type: String
+		},
+		last: {
+			type: String
+		}
+	},
 	password: {
 		type: String
 	},
@@ -26,6 +34,7 @@ var UserSchema = mongoose.Schema({
 	},
 	confirmationCode: {
 		type: String,
+		unique: true,
 	}
 });
 

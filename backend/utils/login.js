@@ -11,7 +11,7 @@ const transport = nodemailer.createTransport({
 })
 
 const isAdmin = (req, res) => {
-    req.email
+    
 }
 const sendConfirmationEmail = async (req, email, confirmationCode) => {
     await transport.sendMail({
@@ -19,9 +19,13 @@ const sendConfirmationEmail = async (req, email, confirmationCode) => {
         to: email,
         subject: "Eaglescout Signup Confirmation",
         html: `<h1> Email Confirmation </h1>
-        <p> Please follow <a href="${req.protocol}://${req.hostname}/user/signup/${confirmationCode}" target="_blank"
+        <p> Please follow <a href="${req.protocol}://${req.hostname}/api/user/signup/${confirmationCode}" target="_blank"
         Link</a> to confirm your email! </p>`
     })
+}
+
+const ensureAuthenticated = (req, res, next) => {
+    
 }
 
 module.exports = {
