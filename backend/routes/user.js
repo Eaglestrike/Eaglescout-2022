@@ -3,56 +3,36 @@ const User = require("../models/user.model")
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const utils = require("../utils/utils");
-const loginUtil = require("../utils/login");
-const passport = require("passport");
-const LocalStrategy = require('passport-local').Strategy;
+const loginUtils = require("../utils/login");
+const jwt = require("jsonwebtoken");
+const secrets = require("../config/secrets")
 
-passport.serializeUser((user, done) => {
-    done(null, user.id)
-});
-
-passport.deserializeUser((id, done) => {
-    User.findById(id)
-    .then((err, user) => {
-        done(err,user);
+router.route("/login").post((req, res) => {
+    User.findOne({email: req.body.email})
+    .then(user => {
+        if(!user) {
+            res.status(400).send({error: "User does not exist"});
+        }
+        bcrypt.compare(password, user.password)
+        .then((err, valid) => {
+            if(err) throw err;
+            if(valid){
+                jwt.sign(user,
+                secrets.JWT_KEY,
+                {expiresIn: 10000000},
+                (err, token) =>{
+                    if(err) res.status(400).send({error: "Could not use jwt"});
+                    else res.status(200).send({msg: "Success", token: token})
+                })
+            } 
+            else res.status(400).send({error: "Passwords do not match"});
+        })
+    })
+    .catch(err=>{
+        res.status(400).send({error: "Could not fetch user"});
     })
 })
 
-passport.use(
-    new LocalStrategy({usernameField:"email"}, (email, password, cb) => {
-        User.findOne({email: email})
-        .then(user => {
-            if(!user) {
-                return cb(false, null, {message: "User does not exist"});
-            }
-            bcrypt.compare(password, user.password)
-            .then((err, valid) => {
-                if(err) throw err;
-                if(valid) return cb(false, user);
-                else cb(true, null, {message: "Passwords do not match"});
-            })
-        })
-        .catch(err=>{
-            return cb(true, null , {message: "Could not fetch user"});
-        })
-    })
-)
-
-router.route("/login").post((req,res) => {
-    passport.authenticate('local', (err, user, info) => {
-        if(err) {
-            return res.status(400).send({error: info.message});
-        }
-        if(!user){
-            return res.status(400).send({error: info.message});
-        }
-        req.logIn(user, (err) => {
-            if(err) return res.status(400).send({error: err});
-            return req.status(200).json({msg: `logged in ${user.email}`})
-        });
-    })(req,res)
-});
-//plan for now, send 
 router.route("/signup").post(async (req,res) => {
     const body = req.body;
     if (!(body.email && body.password)) {
@@ -84,7 +64,7 @@ router.route("/signup/:code").post(async (req,res) => {
     res.status(200).send({"msg": "Success! Your email has been authenticated"})
 })
 
-router.route("/profile").post(async (req, res) => {
+router.route("/profile").post(loginUtils.verifyJWT,async (req, res) => {
     const body = req.body;
     if (!(body.email && body.password)) {
         return res.status(400).send({ error: "Data not formatted properly" });

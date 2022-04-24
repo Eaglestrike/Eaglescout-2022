@@ -1,17 +1,12 @@
-const { json } = require('express');
 const express = require('express');
 const router = express.Router();
 const Observation = require("../models/observation.model");
-const Game = requrie("../models/game.model");
+const Game = require("../models/game.model");
 const utils = require('../utils/utils');
 const loginUtils = require('../utils/login');
-// const observationForm = require(`../games/${utils.getCurrentGame()}/observationForm`);
-/*
-Change user stuff cuz it kinda bad rn
-*/
+
 router.use((req,res,next) =>{
-    loginUtils.ensureAuthenticated(req, res, next);
-    // utils.ensureAuthenticated(req, res, next);
+    loginUtils.verifyJWT(req, res, next);
 })
 
 
@@ -75,7 +70,7 @@ router.route('/observation/:id').get((req,res) => {
             res.status(400).send({'error': 'Unknown observation ID!'});
             return;
         }
-        if ((!res.locals.user.admin) && res.locals.user.email != observation[user]) {
+        if ((!res.user.roles == 'admin') && res.user.email != observation[user]) {
             res.status(403).send({'error': 'Insufficient permissions'});
             return;
         }
@@ -94,7 +89,7 @@ router.route('/observation/:id').get((req,res) => {
     })
 })
 .delete((req,res) => {
-    if (res.locals.user.admin) {
+    if (res.user.roles=='admin') {
 		Observation.findByIdAndRemove(req.params.id)
         .then((observation) => {
             res.status(200).send({'msg': 'Succesfully deleted observation'});
@@ -105,7 +100,7 @@ router.route('/observation/:id').get((req,res) => {
 	} else {
 		Observation.findOneAndRemove({
 			"_id": req.params.id,
-			user: res.locals.user.email
+			user: res.user.email
 		})
         .then(() => {
             res.status(200).send({'msg': 'Succesfully deleted observation'});
@@ -119,7 +114,7 @@ router.route('/observation/:id').get((req,res) => {
 router.route('/editobservation/:id').get((req, res) => {
     Observation.findById(req.params.id)
     .then((observation) => {
-        if(req.locals.user.email != observation[user] && !req.locals.user.admin){
+        if(req.user.email != observation[user] && !req.user.role == 'admin'){
             res.status(400).send({'error': 'Insufficient Permissions'})
             return;
         }

@@ -1,6 +1,9 @@
 const User = require("../models/user.model")
 const nodemailer = require("nodemailer");
-const auth = require("../config/auth.config");
+const auth = require("../config/auth.json");
+var secrets = require("../config/secrets.json");
+var jwt = require("jsonwebtoken")
+
 
 const transport = nodemailer.createTransport({
     service: "gmail",
@@ -24,12 +27,22 @@ const sendConfirmationEmail = async (req, email, confirmationCode) => {
     })
 }
 
-const ensureAuthenticated = (req, res, next) => {
-    
+const verifyJWT = (req, res, next) => {
+    const token = req.headers["x-access-token"];
+    if(token) {
+        jwt.verify(token, secrets.jwt, (err, decoded) => {
+            if(err) return res.status(400).json({error: "User is not logged in"});
+            req.user=decoded;
+            next() 
+        })
+    }
+    else{
+        res.status(400).json({error: "Token does not exist"})
+    }
 }
 
 module.exports = {
     isAdmin, 
     sendConfirmationEmail,
-
+    verifyJWT,
 }
