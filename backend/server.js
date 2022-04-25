@@ -19,11 +19,11 @@ app.use(bodyParser.json())
 
 
 
-const scout = require('./routes/scout');
+const scout = require('./routes/observation');
 const admin = require('./routes/admin');
 const user = require('./routes/user');
 
-app.use('/api/scout', scout);
+app.use('/api/observation', scout);
 app.use('/api/admin', admin);
 app.use('/api/user', user)
 

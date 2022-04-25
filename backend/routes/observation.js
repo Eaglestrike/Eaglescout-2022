@@ -4,13 +4,14 @@ const Observation = require("../models/observation.model");
 const Game = require("../models/game.model");
 const utils = require('../utils/utils');
 const loginUtils = require('../utils/login');
-
-router.use((req,res,next) =>{
+//probably want to move files around to make api make more sense
+router.use((req,res,next) => {
     loginUtils.verifyJWT(req, res, next);
 })
 
 
-router.route('/list').get((req, res) => {
+router.route('/list')
+.get((req, res) => {
     Observation.find().then(observations => {
         res.status(200).json(observations);
     })
@@ -19,7 +20,8 @@ router.route('/list').get((req, res) => {
     })
 })
 
-router.route('/new').get((req,res) => {
+router.route('/new')
+.get((req,res) => {
     Game.findOne({year: parseInt(utils.getCurrentGame())})
     .then(game => {
         var structure = {
@@ -54,7 +56,6 @@ router.route('/new').get((req,res) => {
 })
 .post((req,res) => {
     req.body.user = req.user._id;
-	delete req.body.action;
 	var newObservation = new Observation({year: utils.getCurrentGame(), ...req.body});
     newObservation.save()
     .then(()=> res.status(200).json('Observation Added'))
@@ -63,7 +64,7 @@ router.route('/new').get((req,res) => {
     })
 })
 
-router.route('/observation/:id').get((req,res) => {
+router.route('/:id').get((req,res) => {
     Observation.findById(req.params.id)
     .then(observation => {
         if(observation == null){
@@ -111,19 +112,16 @@ router.route('/observation/:id').get((req,res) => {
 	}
 })
 
-router.route('/editobservation/:id').get((req, res) => {
+router.route('/edit/:id').get((req, res) => {
     Observation.findById(req.params.id)
     .then((observation) => {
         if(req.user.email != observation[user] && !req.user.role == 'admin'){
             res.status(400).send({'error': 'Insufficient Permissions'})
             return;
         }
-        var structure = observationForm.getObservationFormStructure();
-        structure.events = events;
         res.status(200).json({
             observationID: req.params.id,
             observation: observation,
-            structure: structure
         })
     })
     .catch(error => {
