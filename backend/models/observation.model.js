@@ -2,19 +2,27 @@ var utils = require("../utils/utils")
 const mongoose = require('mongoose');
 
 var observationFormSchema = {
+    userId: {
+        type: String,
+        required: true
+    },
     year: {
-        type: Number
+        type: Number,
+        required: true
     },
     event: {
-        type: String
+        type: String,
+        required: true
     },
     match: {
-        type: Number
+        type: Number,
+        required: true
     },
     team: {
-        type: Number
+        type: Number,
+        required: true
     },
-    game: {
+    data: {
         type: mongoose.Schema.Types.Mixed
     }
 }

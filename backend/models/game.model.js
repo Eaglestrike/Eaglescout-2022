@@ -12,6 +12,9 @@ var Game = {
     observationForm: { 
         type: mongoose.Schema.Types.Mixed
     },
+    pitScoutingForm: {
+        type: mongoose.Schema.Types.Mixed
+    },
     filters: {
         type: mongoose.Schema.Types.Mixed
     },

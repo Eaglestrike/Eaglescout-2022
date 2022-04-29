@@ -9,134 +9,107 @@ router.use((req,res,next) => {
     loginUtils.verifyJWT(req, res, next);
 })
 
+router.use((req,res,next) => {
+    loginUtils.ensureUser(req,res,next);
+})
 
 router.route('/list')
-.get((req, res) => {
-    Observation.find().then(observations => {
-        res.status(200).json(observations);
-    })
-    .catch(error => {
-        res.status(400).send({'error': 'Unable to fetch observations'});
-    })
+.get(async (req, res) => {
+    var list = Observation.find()
+    res.status(200).send({msg: "Success", list: list});
+})
+
+router.route('/list/teams/:team')
+.get(async (req,res) => {
+    try {
+        var teamObservations = Observation.find({team: req.params.team});
+        res.status(200).send({msg: "Sucessfully fetched observations", observations: teamObservations})
+    }
+    catch(err){
+        res.status(400).send({error: "Unable to fetch observations"});
+    }
 })
 
 router.route('/new')
-.get((req,res) => {
-    Game.findOne({year: parseInt(utils.getCurrentGame())})
-    .then(game => {
-        var structure = {
-            event: {
-                type: String,
-                input: "dropdown",
-                placeholder: "Select a competition",
-                title: "Current competition",
-                subtitle: "If you're at a practice match, select \"Practice Match\""
-            },
-            match: {
-                type: Number,
-                input: "number",
-                placeholder: "Match number only",
-                title: "Match Number",
-                subtitle: "The number of the match you are observing"
-            },            
-            team: {
-                type: Number,
-                input: "number",
-                placeholder: "Team number only",
-                title: "Team Number",
-                subtitle: "This is the team number you are observing"
-            },
-            ...game.observationForm
-        }
-        res.status(200).json(structure);
-    })
-    .catch(error => {
-        res.status(400).send({"error": "Could not find game for current year"});
-    })  
+.get(async (req,res) => {
+    var game = await Game.findOne({year: parseInt(utils.getCurrentGame())})
+    if(!game) return res.status(400).send({error: "Could not find game of that year"});
+    var structure = {
+        event: {
+            type: String,
+            input: "dropdown",
+            placeholder: "Select a competition",
+            title: "Current competition",
+            subtitle: "If you're at a practice match, select \"Practice Match\""
+        },
+        match: {
+            type: Number,
+            input: "number",
+            placeholder: "Match number only",
+            title: "Match Number",
+            subtitle: "The number of the match you are observing"
+        },            
+        team: {
+            type: Number,
+            input: "number",
+            placeholder: "Team number only",
+            title: "Team Number",
+            subtitle: "This is the team number you are observing"
+        },
+        ...game.observationForm
+    }
+    res.status(200).json(structure);
+   
 })
-.post((req,res) => {
+.post(async (req,res) => {
     req.body.user = req.user._id;
 	var newObservation = new Observation({year: utils.getCurrentGame(), ...req.body});
-    newObservation.save()
-    .then(()=> res.status(200).json('Observation Added'))
-    .catch(err => {
+    try {
+        await newObservation.save()
+        res.status(200).send({msg: 'Observation Added'});
+    }
+    catch(err) {
         res.status(400).send({'error': 'Unable to add observation.'});
-    })
+
+    }
 })
 
-router.route('/:id').get((req,res) => {
-    Observation.findById(req.params.id)
-    .then(observation => {
-        if(observation == null){
-            res.status(400).send({'error': 'Unknown observation ID!'});
-            return;
-        }
-        if ((!res.user.roles == 'admin') && res.user.email != observation[user]) {
-            res.status(403).send({'error': 'Insufficient permissions'});
-            return;
-        }
-        TBA.getEvents((events) => {
-            var structure = observationForm.getObservationFormStructure();
-            structure.events = events;
-            res.json({
-                observationID: req.params.id,
-                observation: observation,
-                structure: structure
-            });
-        });
-    })
-    .catch(err => {
-        res.status(400).send({'error': 'Unknown observation ID!'});
-    })
+router.route('/id/:id')
+.get(async (req,res) => {
+    var observation = await Observation.findById(req.params.id);
+    if(!observation) return res.status(400).send({'error': 'Unknown observation ID!'});
+    res.status(200).send({msg: "Successfuly found observation", observation: observation});
 })
-.delete((req,res) => {
+.delete(async (req,res) => {
     if (res.user.roles=='admin') {
-		Observation.findByIdAndRemove(req.params.id)
-        .then((observation) => {
-            res.status(200).send({'msg': 'Succesfully deleted observation'});
-		})
-        .catch((err) => {
-            res.status(400).send({'error': 'Unknown observation ID!'});
-        })
+		var observation = await Observation.findByIdAndRemove(req.params.id);
+        if(!observation) return res.status(400).send({'error': 'Unknown observation ID!'});
+        return res.status(200).send({'msg': 'Succesfully deleted observation'});
 	} else {
-		Observation.findOneAndRemove({
+		var observation = await Observation.findOneAndRemove({
 			"_id": req.params.id,
 			user: res.user.email
-		})
-        .then(() => {
-            res.status(200).send({'msg': 'Succesfully deleted observation'});
-        })
-        .catch(error => {
-            res.status(403).send('error', 'Insufficient permissions OR unknown observation ID!');
-        });
+		});
+        if(!observation) return res.status(403).send({'error': 'Insufficient permissions OR unknown observation ID!'});
+        return res.status(200).send({'msg': 'Succesfully deleted observation'});
 	}
 })
+.post(async (req,res) => {
+    var update = {
+        userId: req.user.id,
+        ...body
+    }
+    try {
+        var updated = await Observation.findByIdAndUpdate(req.params.id, update)
+        if(!updated) return res.status(400).send({error: "Could not find observation"});
+        return res.status(200).send({'msg': 'Successfully saved observation'});
+    }  
+    catch(err) {
+        return res.status(400).send({error: err});
+    }
+})
 
-router.route('/edit/:id').get((req, res) => {
-    Observation.findById(req.params.id)
-    .then((observation) => {
-        if(req.user.email != observation[user] && !req.user.role == 'admin'){
-            res.status(400).send({'error': 'Insufficient Permissions'})
-            return;
-        }
-        res.status(200).json({
-            observationID: req.params.id,
-            observation: observation,
-        })
-    })
-    .catch(error => {
-        res.status(400).send('error_msg', 'Unknown observation ID!');
-    })
-})
-.post((req,res) => {
-    Observation.findByIdAndUpdate(req.params.id, req.body)
-    .then((observation) => {
-        res.status(200).send({'msg': 'Successfully saved observation'});
-    })
-    .catch((err) => {
-        res.status(200).send({'error': 'Unable to edit observation.'});
-    })
-	
-})
+
+
 
 module.exports = router;

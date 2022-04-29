@@ -4,13 +4,14 @@ var bcrypt = require('bcryptjs');
 /*
 * role: "admin", "user", "viewer?"
 */
-
-
 var UserSchema = mongoose.Schema({
 	email: {
 		type: String,
 		index: true,
 		unique: true
+	},
+	password: {
+		type: String
 	},
 	name: {
 		first: {
@@ -19,9 +20,6 @@ var UserSchema = mongoose.Schema({
 		last: {
 			type: String
 		}
-	},
-	password: {
-		type: String
 	},
 	role: {
 		type: String,

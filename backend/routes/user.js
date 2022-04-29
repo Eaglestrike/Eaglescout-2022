@@ -7,44 +7,56 @@ const loginUtils = require("../utils/login");
 const jwt = require("jsonwebtoken");
 const secrets = require("../config/secrets")
 
-router.route("/login").post((req, res) => {
-    User.findOne({email: req.body.email})
-    .then(user => {
-        if(!user) {
-            res.status(400).send({error: "User does not exist"});
-        }
-        bcrypt.compare(password, user.password)
-        .then((err, valid) => {
-            if(err) throw err;
-            if(valid){
-                jwt.sign(user,
-                secrets.JWT_KEY,
-                {expiresIn: 10000000},
-                (err, token) =>{
-                    if(err) res.status(400).send({error: "Could not use jwt"});
-                    else res.status(200).send({msg: "Success", token: token})
-                })
-            } 
-            else res.status(400).send({error: "Passwords do not match"});
-        })
-    })
-    .catch(err=>{
-        res.status(400).send({error: "Could not fetch user"});
-    })
+const createDefaultAdmin = async () =>{
+    var user = await User.find();
+    if(user.length > 0) return;
+    var user = {
+        email: "admin@team114.org",
+        password: "team114",
+        name: {
+            first: "ad",
+            last: "min"
+        },
+        role: "admin",
+        status: "active",
+        confirmationCode: "123123123123123",
+    }
+    var admin = new User(user);
+    await admin.save();
+}
+createDefaultAdmin();
+
+router.route("/login")
+.post(async (req, res) => {
+    var user = await User.findOne({email: req.body.email});
+    if(!user) return res.status(400).send({error: "User does not exist"});
+    var valid = await bcrypt.compare(req.body.password, user.password);
+    if(!valid) return res.status(400).send({error: "Passwords do not match"});
+    var token = jwt.sign(
+        loginUtils.getUserInfo(user),
+        secrets.JWT_KEY,
+        {expiresIn: 10000000}
+    );
+    res.status(200).send({msg: "Success", token: token})
 })
 
-router.route("/signup").post(async (req,res) => {
+router.route("/signup")
+.post(async (req,res) => {
     const body = req.body;
     if (!(body.email && body.password)) {
-        return res.status(400).send({ error: "Data not formatted properly" });
+        res.status(400).send({ error: "Data not formatted properly" });
     }
     var foundUser = await User.findOne({email: body.email});
     if(foundUser != null) {
-        return res.status(400).send({error: "An account with this email already exists!"});
+        res.status(400).send({error: "An account with this email already exists!"});
     }
-    var confirmation = utils.genConfirmationCode(5)
+    var confirmation = utils.genConfirmationCode(10)
     var user = {
         ...body,
+        name: {
+            first: "",
+            last: "",
+        },
         "role": "viewer",
         "confirmationCode": confirmation,
     }
@@ -53,9 +65,14 @@ router.route("/signup").post(async (req,res) => {
     newUser.save();
     await loginUtil.sendConfirmationEmail(user.email, confirmation)
 })
-router.route("/signup/:code").post(async (req,res) => {
+
+router.route("/signup/:code")
+.post(async (req,res) => {
     var code = req.params.code
     curUser = await User.findOne({confirmationCode: code})
+    if(curUser.status =="active"){
+        res.status(400).send({error: "User is already authenticated"});
+    }
     if(curUser == null){
         res.status(400).send({ error: `Could not find user with confirmation code ${code}`})
     }
@@ -64,17 +81,18 @@ router.route("/signup/:code").post(async (req,res) => {
     res.status(200).send({"msg": "Success! Your email has been authenticated"})
 })
 
-router.route("/profile").post(loginUtils.verifyJWT,async (req, res) => {
+router.route("/profile")
+.post(loginUtils.verifyJWT, async (req, res) => {
     const body = req.body;
     if (!(body.email && body.password)) {
-        return res.status(400).send({ error: "Data not formatted properly" });
+        res.status(400).send({ error: "Data not formatted properly" });
     }
     var user = await User.find({email: body.email});
     if(!user){
-        return res.status(400).send({ error: "User does not exist!" });
+        res.status(400).send({ error: "User does not exist!" });
     }
     if(!(req.body.firstName && req.body.lastName)){
-        return res.status(400).send({error: "firstName and "})
+        res.status(400).send({error: "firstName and "})
     }
     if(req.body.firstName){
         user.name.first = req.body.firstName;
@@ -83,26 +101,54 @@ router.route("/profile").post(loginUtils.verifyJWT,async (req, res) => {
         user.name.last = req.body.lastName;
     }
     await user.save();
+    res.status(200).send({msg: "Successfully updated user profile"});
 })
-router.route("/resetpassword").post(async (req, res) => {
+
+router.route("/resetpassword")
+.post(loginUtils.verifyJWT, async (req, res) => {
     const body = req.body;
-    if (!(body.email && body.password)) {
-        return res.status(400).send({ error: "Data not formatted properly" });
+    if (!(req.user.email && body.password)) return res.status(400).send({ error: "Data not formatted properly" });
+    var user = await User.findById(req.user.id);
+    if(!user) return res.status(400).send({ error: "User does not exist!" });
+    var valid = await bcrypt.compare(req.body.password, user.password);
+    if(!valid) return res.status(400).send({error: "Passwords do not match"})
+    user.password = await bcrypt.hash(body.newPassword,10)
+    await user.save();
+    res.status(200).send({msg: "Successfully reset password"});
+})
+
+router.route("/forgotpassword/token")
+.get(async (req,res) => {
+    var body = req.body;
+    var email = body.email;
+    var user = await user.findOne({email: email});
+    if(!user) return res.status(400).send({error: "Could not find user"});
+    var token = jwt.sign(user._id,secrets.JWT_KEY,{expiresIn: 450});
+    await loginUtil.sendForgotPassword(req, email, token);
+    res.status(200).send({msg: "Successfully sent email"});
+})
+
+router.route("/forgotpassword/reset/:token")
+.post(async (req,res) => {
+    var body = req.body;
+    var token = req.params.token;
+    var id;
+    try{
+        id = jwt.verify(token,secrets.JWT_KEY);
     }
-    var user = await User.find({email: body.email});
-    if(!user){
-        return res.status(400).send({ error: "User does not exist!" });
+    catch(err) {
+        res.status(400).send({error: "Invalid token"});
     }
-    var valid = await bcrypt.compare(user.password, body.password);
-    if(valid){
-        user.password = body.newPassword()
+    try {
+        var user = await User.findById(id);
+        if(!user) res.status(400).send({error: "Could not find user"}); 
+        user.password = await bcrypt.hash(body.password,10);
+        await user.save();
+        res.status(200).send({msg: "Successfully reset password"});
+    }
+    catch(err) {
+        res.status(400).send({error: "Could not find user or could not save user"})
     }
 })
-router.route("/:id").get(async (req, res) => {
-    var user = await User.findById(id);
-    if(user == null){
-        res.status(400).send({"error": "Could not find user"});
-    }
-    res.status(200).send({"user": user});
-})
+
 module.exports = router;
