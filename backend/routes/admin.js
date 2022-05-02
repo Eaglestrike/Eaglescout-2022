@@ -77,18 +77,5 @@ router.route("/users/:id")
     }
 })
 
-router.route("/users/roles/edit/:id")
-.post(async (req,res) => {
-    try {
-        var user = await User.findById(req.params.id);
-        if(!user) res.status(400).send({error: "Could not update role of that user"})
-        user["role"] = req.body.role;
-        await user.save();
-        res.status(200).send({msg: "Updated role of user"})
-    }
-    catch {
-        res.status(400).send({error: "Could not update role for that user"})
-    }
-})
 
 module.exports = router;

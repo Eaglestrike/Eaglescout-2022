@@ -55,7 +55,12 @@ const verifyJWT = (req, res, next) => {
 }
 
 const ensureUser = (req,res,next) => {
-    if(req.user.role == 'admin' || req.user.role == 'user') next();
+    if(req.user.role == 'admin' || req.user.role == 'user' || req.user.role == 'moderator') next();
+    res.status(403).send({error: "Insufficient Permissions"})
+}
+
+const ensureModerator = (req, res, next) => {
+    if(req.user.role == 'admin' || req.user.role == 'moderator') next();
     res.status(403).send({error: "Insufficient Permissions"})
 }
 
@@ -78,6 +83,7 @@ module.exports = {
     sendConfirmationEmail,
     verifyJWT,
     ensureAdmin,
+    ensureModerator,
     ensureUser,
     getUserInfo,
 }

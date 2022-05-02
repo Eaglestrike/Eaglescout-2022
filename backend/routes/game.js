@@ -27,6 +27,7 @@ router.route("/current")
         res.status(400).send({error: "Unable to edit current game year"});
     }
 })
+
 router.route("/new")
 .post(loginUtils.ensureAdmin, async (req,res) => {
     var body = req.body;
@@ -55,7 +56,7 @@ router.route("/game/:year")
     if(!game) return res.status(400).send({error: "Unable to find game"});
     res.status(400).send({msg: "Success", game: game});
 })
-.post(loginUtils.ensureAdmin, async (req, res) => {
+.put(loginUtils.ensureAdmin, async (req, res) => {
     var body = req.body;
     var game = await Game.findOne({year: req.params.year});
     if(!game) return res.status(400).send({error: "Could not find game of that year"});
@@ -83,7 +84,7 @@ router.route("/observationform/:year")
     if(!game) return res.status(400).send({error: "Unable to find game"});
     res.status(400).send({msg: "Success", form: game.observationForm});
 })
-.post(loginUtils.ensureAdmin, async (req, res) => {
+.put(loginUtils.ensureAdmin, async (req, res) => {
     var body = req.body;
     var game = await Game.findOne({year: req.params.year});
     if(!game) return res.status(400).send({error: "Could not find game of that year"});
@@ -103,7 +104,7 @@ router.route("/pitscoutingform/:year")
     if(!game) return res.status(400).send({error: "Unable to find game"});
     res.status(400).send({msg: "Success", form: game.pitScoutingForm});
 })
-.post(loginUtils.ensureAdmin, async (req,res) => {
+.put(loginUtils.ensureAdmin, async (req,res) => {
     var body = req.body;
     var game = await Game.findOne({year: req.params.year});
     if(!game) return res.status(400).send({error: "Could not find game of that year"});
@@ -123,7 +124,7 @@ router.route("/filters/:year")
     if(!game) return res.status(400).send({error: "Unable to find game"});
     res.status(200).send({msg: "Success, Found filters", filters: game.filters});
 })
-.post(loginUtils.ensureAdmin, async (req, res) => {
+.put(loginUtils.ensureAdmin, async (req, res) => {
     var game = await Game.findOne({year: req.params.year});
     if(!game) return res.status(400).send({error: "Unable to find game"});
     game.filters = req.body.filters;

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
 /*
-* role: "admin", "user", "viewer?"
+* role: "admin", "moderater", "user", "viewer?"
 */
 var UserSchema = mongoose.Schema({
 	email: {
@@ -23,7 +23,7 @@ var UserSchema = mongoose.Schema({
 	},
 	role: {
 		type: String,
-		enum: ["admin", "user", "viewer"],
+		enum: ["admin","moderator", "user", "viewer"],
 		default: "viewer"
 	},
 	status: {

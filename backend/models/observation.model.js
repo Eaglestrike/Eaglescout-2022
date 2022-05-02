@@ -14,6 +14,11 @@ var observationFormSchema = {
         type: String,
         required: true
     },
+    compLevel: {
+        type: String,
+        enum: ['qm','ef', 'qf','sf','f']
+    },
+    //either qualification match number or set number
     match: {
         type: Number,
         required: true

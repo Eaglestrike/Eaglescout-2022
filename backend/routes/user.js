@@ -67,7 +67,7 @@ router.route("/signup")
 })
 
 router.route("/signup/:code")
-.post(async (req,res) => {
+.put(async (req,res) => {
     var code = req.params.code
     curUser = await User.findOne({confirmationCode: code})
     if(curUser.status =="active"){
@@ -129,7 +129,7 @@ router.route("/forgotpassword/token")
 })
 
 router.route("/forgotpassword/reset/:token")
-.post(async (req,res) => {
+.put(async (req,res) => {
     var body = req.body;
     var token = req.params.token;
     var id;
@@ -149,6 +149,35 @@ router.route("/forgotpassword/reset/:token")
     catch(err) {
         res.status(400).send({error: "Could not find user or could not save user"})
     }
+})
+
+router.route("/list")
+.get([loginUtils.verifyJWT, loginUtils.ensureAdmin], async (req,res) => {
+    var list = await User.find();
+    res.status(200).send({msg: "Success", list: list});
+})
+
+router.route("/id/:id")
+.get(loginUtils.verifyJWT, async (req,res) => {
+    var user = await User.findById(req.params.id);
+    if(!user) res.status(400).send({error: "User does not exist"});
+    if(!(req.user.role == 'admin' || req.user.role == 'moderator' || req.user.id == user._id)) 
+        res.status(400).send({error: "Insufficient Permissions"});
+    res.status(200).send({msg: "Success", user: user});
+})
+
+router.route("/role/:id")
+.put(loginUtils.ensureModerator, async (req,res) => {
+    var body = req.body;
+    var user = await User.findById(req.params.id);
+    if(!user) res.status(400).send({error: "User does not exist"});
+    if(body.newRole == 'admin' && req.user.role != 'admin') 
+        res.status(400).send({error: "Insufficient Permissions"})
+    if(body.newRole == 'moderator' && req.user.role != 'admin') 
+        res.status(400).send({error: "Insufficient Permissions"})
+    user.role = body.newRole;
+    await user.save();
+    res.status(200).send({msg: "Success!"});
 })
 
 module.exports = router;
