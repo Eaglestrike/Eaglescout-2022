@@ -24,7 +24,7 @@ var observationFormSchema = {
         required: true
     },
     team: {
-        type: Number,
+        type: String,
         required: true
     },
     data: {

@@ -19,7 +19,7 @@ const genConfirmationCode = (len) => {
 }
 const readMatchString = (matchString) => {
 	/*
-	TBA match key with the format yyyy[EVENT_CODE]_[COMP_LEVEL]m[MATCH_NUMBER]t[TEAN_NUMBER],
+	TBA match key with the format yyyy[EVENT_CODE]_[COMP_LEVEL]m[MATCH_NUMBER]t[TEAM_NUMBER],
 	 where yyyy is the year, and EVENT_CODE is the event code of the event,
 	 COMP_LEVEL is (qm, ef, qf, sf, f), and MATCH_NUMBER is the match number 
 	 in the competition level. A set number may be appended to the competition
@@ -32,7 +32,7 @@ const readMatchString = (matchString) => {
 		var temp2 = temp1.split('m')
 		var compLevel = temp2[0]
 		var match = parseInt(temp2[1].split('t')[0])
-		var team = parseInt(temp2[1].split('t')[1])
+		var team = temp2[1].split('t')[1]
 		return {
 			year: year,
 			event: event,

@@ -22,7 +22,7 @@ router.route('/list')
 router.route('/team/:team')
 .get(async (req,res) => {
     try {
-        var teamObservations = await Observation.find({team: parseInt(req.params.team)});
+        var teamObservations = await Observation.find({team: req.params.team});
         res.status(200).send({msg: "Sucessfully fetched observations", observations: teamObservations})
     }
     catch(err){
@@ -30,7 +30,7 @@ router.route('/team/:team')
     }
 })
 
-router.route('/events/:event/')
+router.route('/events/:event')
 .get(async (req,res) => {
     var list = await Observation.find({
         event: req.params.event
@@ -41,7 +41,7 @@ router.route('/events/:event/')
 router.route('/events/:event/team/:team')
 .get(async (req,res) => {
     var list = await Observation.find({
-        team: parseInt(req.params.team),
+        team: req.params.team,
         event: req.params.event
     })
     res.status(200).send({msg: "Success", observations: list});
@@ -61,11 +61,13 @@ router.route('/new')
     var game = await Game.findOne({year: parseInt(utils.getCurrentGame())})
     if(!game) return res.status(400).send({error: "Could not find game of that year"});
     var structure = {
+        year: parseInt(utils.getCurrentGame),
         event: {
             input: "dropdown",
             placeholder: "Select a competition",
             title: "Current competition",
-            subtitle: "If you're at a practice match, select \"Practice Match\""
+            subtitle: "If you're at a practice match, select \"Practice Match\"",
+            required: true
         },
         compLevel: {
             input: "dropdown",
@@ -77,19 +79,22 @@ router.route('/new')
                 'f': "Finals"
             },
             title: "Competition level",
-            subtitle: "The competition level is the match you are observing"
+            subtitle: "The competition level is the match you are observing",
+            required: true,
         },
         match: {
             input: "number",
             placeholder: "Match number only",
             title: "Match Number",
-            subtitle: "The number of the match you are observing"
+            subtitle: "The number of the match you are observing",
+            required: true
         },            
         team: {
             input: "number",
             placeholder: "Team number only",
             title: "Team Number",
-            subtitle: "This is the team number you are observing"
+            subtitle: "This is the team number you are observing",
+            required: true
         },
         ...game.observationForm
     }
@@ -98,7 +103,7 @@ router.route('/new')
 })
 .post(async (req,res) => {
     req.body.user = req.user._id;
-	var newObservation = new Observation({year: utils.getCurrentGame(), ...req.body});
+	var newObservation = new Observation(req.body);
     try {
         await newObservation.save()
         res.status(200).send({msg: 'Observation Added'});
@@ -116,11 +121,13 @@ router.route('/new/:matchstring')
     if(!game) return res.status(400).send({error: "Could not find game of that year"});
     
     var structure = {
+        year: matchinfo.year,
         event: {
             input: "dropdown",
             value: matchinfo.event,
             title: "Current competition",
-            subtitle: "If you're at a practice match, select \"Practice Match\""
+            subtitle: "If you're at a practice match, select \"Practice Match\"",
+            required: true,
         },
         compLevel: {
             input: "dropdown",
@@ -132,26 +139,29 @@ router.route('/new/:matchstring')
                 'f': "Finals"
             },
             title: "Competition level",
-            subtitle: "The competition level is the match you are observing"
+            subtitle: "The competition level is the match you are observing",
+            required: true
         },
         match: {
             input: "number",
             value: matchinfo.match,
             title: "Match Number",
-            subtitle: "The number of the match you are observing"
+            subtitle: "The number of the match you are observing",
+            required: true
         },            
         team: {
             input: "number",
             value: matchinfo.team,
             title: "Team Number",
-            subtitle: "This is the team number you are observing"
+            subtitle: "This is the team number you are observing",
+            required: true
         },
         ...game.observationForm
     }
 })
 .post(async (req,res) => {
     req.body.user = req.user._id;
-	var newObservation = new Observation({year: utils.getCurrentGame(), ...req.body});
+	var newObservation = new Observation(req.body);
     try {
         await newObservation.save()
         res.status(200).send({msg: 'Observation Added'});
@@ -185,7 +195,7 @@ router.route('/id/:id')
 .put(async (req,res) => {
     var update = {
         userId: req.user.id,
-        ...body
+        ...req.body
     }
     try {
         var updated = await Observation.findByIdAndUpdate(req.params.id, update)

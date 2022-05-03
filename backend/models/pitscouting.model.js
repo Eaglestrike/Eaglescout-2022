@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 
 var pitScouting = {
+    userId: {
+        type: String
+    },
     year: {
         type: Number
     },
@@ -8,7 +11,7 @@ var pitScouting = {
         type: String
     },
     team: {
-        type: Number
+        type: String
     },
     data: {
         type: mongoose.Schema.Types.Mixed

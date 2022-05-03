@@ -20,7 +20,8 @@ const sendConfirmationEmail = async (req, email, confirmationCode) => {
         to: email,
         subject: "Eaglescout Signup Confirmation",
         html: `<h1> Email Confirmation </h1>
-        <p> Please follow <a href="${req.protocol}://${req.hostname}/user/confirmation/${confirmationCode}" target="_blank"
+        <p> Please follow 
+        <a href="${req.protocol}://${req.hostname}/user/confirmation/${confirmationCode}" target="_blank">
         Link</a> to confirm your email! </p>`
     })
 }
@@ -65,6 +66,7 @@ const ensureModerator = (req, res, next) => {
 }
 
 const ensureAdmin = (req,res,next) => {
+    console.log(req.user.role);
     if(req.user.role == 'admin') next();
     res.status(403).send({error: "Insufficient Permissions"})
 }
