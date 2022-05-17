@@ -41,6 +41,7 @@ const Navbar = () => {
               </div>
             </li>
           }
+          
           {
             user.user.role == "admin" && 
             <li className="nav-item dropdown">
@@ -56,11 +57,19 @@ const Navbar = () => {
           }
         </ul>
         {
-          user.user.loggedIn &&
-          <button type="button" className="nav-item btn btn-light btn-outline-dark" data-bs-toggle="modal" data-bs-target="#logoutModal">
-            Logout
-          </button>
-        }
+          (user.user.loggedIn) && 
+            <div className="nav-item dropdown">
+              <div className="dropdown-toggle" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Hi {user.user.name.first}!
+              </div>
+              <div className="dropdown-menu" aria-labelledby="profileDropdown">
+                <Link to="/account" className="dropdown-item">Account</Link>
+                <div className="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                  Logout
+                </div>
+              </div>
+            </div>
+          }
         {
           !user.user.loggedIn && 
           <button id="login" className="nav-item btn btn-light btn-outline-dark" onClick={userLogin}>

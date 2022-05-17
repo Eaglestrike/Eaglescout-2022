@@ -58,7 +58,7 @@ router.route("/signup")
         return res.status(400).send({error: "An account with this email already exists!"});
     }
     try {    
-        var confirmation = utils.genConfirmationCode(25);
+        var confirmation = utils.genRandToken(25);
         var user = {
             ...body,
             name: {
@@ -88,9 +88,9 @@ router.route("/signup/email")
     res.status(200).send({msg: "Successfully sent confirmation email"})
 })
 
-router.route("/signup/code/:code")
+router.route("/signup/token/:token")
 .put(async (req,res) => {
-    var code = req.params.code
+    var code = req.params.token
     curUser = await User.findOne({confirmationCode: code})
     if(curUser.status =="active"){
         return res.status(400).send({error: "User is already authenticated"});
@@ -152,18 +152,22 @@ router.route("/forgotpassword/token")
     var email = body.email;
     var user = await User.findOne({email: email});
     if(!user) return res.status(400).send({error: "Could not find user"});
-    var token = jwt.sign({id: user._id},secrets.JWT_KEY,{expiresIn: 450});
+    var token = utils.genRandToken(25);
+    user.resetPasswordToken.token = token;
+    //milliseconds to minutes 60000
+    user.resetPasswordToken.expiresIn = new Date().getTime() + 60000*10;
+    user.save();
     await loginUtil.sendResetPasswordEmail(req, email, token);
     res.status(200).send({msg: "Successfully sent email"});
 })
 
 router.route("/forgotpassword/valid/:token")
 .get(async (req,res) => {
-    console.log(req.params)
     try {
-        var decoded = jwt.verify(req.params.token,secrets.JWT_KEY);
-        var user = await User.findById(decoded.id);
+        // var decoded = jwt.verify(req.params.token,secrets.JWT_KEY);
+        var user = await User.findOne({'resetPasswordToken.token': req.params.token});
         if(!user) return res.status(400).send({error: "Invalid token"});
+        if(user.resetPasswordToken.expiresIn < new Date().getTime()) return res.status(400).send({error: "Invalid token"});
         return res.status(200).send({msg: "Valid token", email: user.email});
     }
     catch(err){
@@ -171,22 +175,18 @@ router.route("/forgotpassword/valid/:token")
     }
 })
 
-router.route("/forgotpassword/reset")
+router.route("/forgotpassword/reset/:token")
 .put(async (req,res) => {
     var body = req.body;
-    var token = req.params.token;
-    var decoded;
-    try{
-        decoded = jwt.verify(token,secrets.JWT_KEY);
-    }
-    catch(err) {
-        return res.status(400).send({error: "Invalid token"});
-    }
+    
     try {
-        var user = await User.findById(decoded.id);
-        if(!user) return res.status(400).send({error: "Could not find user"}); 
+        var user = await User.findOne({'resetPasswordToken.token': req.params.token});
+        if(!user) return res.status(400).send({error: "Invalid Token"}); 
+        if(user.resetPasswordToken.expiresIn < new Date().getTime()) return res.status(400).send({error: "Invalid token"});
         user.password = await bcrypt.hash(body.password,10);
+        user.resetPasswordToken.expiresIn = 0;
         await user.save();
+
         return res.status(200).send({msg: "Successfully reset password"});
     }
     catch(err) {

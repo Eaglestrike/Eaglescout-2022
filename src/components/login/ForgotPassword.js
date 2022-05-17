@@ -1,5 +1,6 @@
-import React, {useState} from 'react'
-import { Link } from 'react-router-dom'
+import React, {useEffect, useState} from 'react'
+import { useSelector } from 'react-redux'
+import { Link, useNavigate} from 'react-router-dom'
 import '../../css/login.css'
 
 const ForgotPassword = () => {
@@ -7,8 +8,12 @@ const ForgotPassword = () => {
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [emailFail, setEmailFail] = useState(0);
+  var navigate = useNavigate();
+  var curUser = useSelector(state => state.user)
+  useEffect(() => {
+    if(curUser.user.loggedIn) navigate("/");
+  }, [])
   const handleChange = (event) => {
-
     setEmailData({
       ...emailData,
       [event.target.name]: event.target.value.trim()

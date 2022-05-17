@@ -34,6 +34,16 @@ var UserSchema = mongoose.Schema({
 	confirmationCode: {
 		type: String,
 		unique: true,
+	},
+	resetPasswordToken: {
+		token: {
+			type: String,
+			default: ""	
+		},
+		expiresIn: {
+			type: Number,
+			default: 0
+		}
 	}
 });
 

@@ -9,7 +9,7 @@ const getCurrentGame = async () => {
 	var json = JSON.parse(buffer);
 	return json["current_game"];
 }
-const genConfirmationCode = (len) => {
+const genRandToken = (len) => {
 	var letters="0123456789abcdefghijklmnopqrstuvwxyz"
 	var code = "";
 	for(var i = 0; i < len; i++){
@@ -48,7 +48,7 @@ const readMatchString = (matchString) => {
 module.exports = {
 	getCurrentEvent,
 	getCurrentGame,
-	genConfirmationCode,
+	genRandToken,
 	readMatchString,
 };
 
