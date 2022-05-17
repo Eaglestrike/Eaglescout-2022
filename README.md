@@ -1,3 +1,19 @@
+To get started
+
+STEP 1
+download nvm or node or something
+
+STEP 2
+do npm install in both root directory and backend directory
+if you are developing locally or running on server, please go to mongodb website and install
+it for your device
+
+Step 3
+go to backend and run node server.js
+run the npm script in frontend
+and we are happy
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

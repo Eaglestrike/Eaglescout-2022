@@ -4,8 +4,8 @@ var pitScouting = {
     userId: {
         type: String
     },
-    year: {
-        type: Number
+    game: {
+        type: String
     },
     event: {
         type: String
@@ -18,5 +18,6 @@ var pitScouting = {
     }
 }
 
-var pitScoutingSchema = mongoose.Schema(pitScouting);
-var PitScouting = module.exports = mongoose.Model("PitScouting", pitScoutingSchema);
+var PitScoutingSchema = mongoose.Schema(pitScouting);
+
+var PitScouting = module.exports = mongoose.model('PitScouting', PitScoutingSchema);

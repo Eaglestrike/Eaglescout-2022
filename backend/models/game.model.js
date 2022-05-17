@@ -4,8 +4,8 @@ var Game = {
     /*
     each observation form should be of the structure
      */
-    year: {
-        type: Number,
+    name: {
+        type: String,
         index: true,
         unique: true
     },

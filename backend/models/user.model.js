@@ -23,7 +23,7 @@ var UserSchema = mongoose.Schema({
 	},
 	role: {
 		type: String,
-		enum: ["admin","moderator", "user", "viewer"],
+		enum: ["owner","admin","moderator", "user", "viewer"],
 		default: "viewer"
 	},
 	status: {

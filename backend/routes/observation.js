@@ -19,15 +19,23 @@ router.route('/list')
     res.status(200).send({msg: "Success", observations: list});
 })
 
+router.route('/list/game/:game')
+.get(async (req,res) => {
+    var list = await Observation.find({name: req.params.game});
+    res.status(200).send({msg: "Success", observations: list})
+})
+
+router.route('/list/game/:game/team/:team')
+.get(async (req,res) => {
+    var list = await Observation.find({name: req.params.game, team: team});
+    res.status(200).send({msg: "Success", observations: list})
+})
+
 router.route('/team/:team')
 .get(async (req,res) => {
-    try {
-        var teamObservations = await Observation.find({team: req.params.team});
-        res.status(200).send({msg: "Sucessfully fetched observations", observations: teamObservations})
-    }
-    catch(err){
-        res.status(400).send({error: "Unable to fetch observations"});
-    }
+    var list = await Observation.find({team: req.params.team});
+    res.status(200).send({msg: "Success", observations: list})
+    
 })
 
 router.route('/events/:event')
@@ -58,12 +66,13 @@ router.route('/list/:matchstring')
 
 router.route('/new')
 .get(async (req,res) => {
-    var game = await Game.findOne({year: parseInt(utils.getCurrentGame())})
-    if(!game) return res.status(400).send({error: "Could not find game of that year"});
+    var game = await Game.findOne({name: utils.getCurrentGame()})
+    if(!game) return res.status(400).send({error: "Could not find game"});
     var structure = {
-        year: parseInt(utils.getCurrentGame),
+        game: utils.getCurrentGame(),
         event: {
             input: "dropdown",
+            category: "info",
             placeholder: "Select a competition",
             title: "Current competition",
             subtitle: "If you're at a practice match, select \"Practice Match\"",
@@ -71,6 +80,7 @@ router.route('/new')
         },
         compLevel: {
             input: "dropdown",
+            category: "info",
             placeholder: "Select Competition Level",
             data: {
                 "qm": "Qualification Match",
@@ -84,6 +94,7 @@ router.route('/new')
         },
         match: {
             input: "number",
+            category: "info",
             placeholder: "Match number only",
             title: "Match Number",
             subtitle: "The number of the match you are observing",
@@ -91,6 +102,7 @@ router.route('/new')
         },            
         team: {
             input: "number",
+            category: "info",
             placeholder: "Team number only",
             title: "Team Number",
             subtitle: "This is the team number you are observing",
@@ -117,13 +129,14 @@ router.route('/new')
 router.route('/new/:matchstring')
 .get(async (req,res) => {
     var matchinfo = utils.readMatchString(req.params.matchstring);
-    var game = await Game.findOne({year: matchinfo.year})
-    if(!game) return res.status(400).send({error: "Could not find game of that year"});
+    var game = await Game.findOne({name: matchinfo.game})
+    if(!game) return res.status(400).send({error: "Could not find game"});
     
     var structure = {
-        year: matchinfo.year,
+        game: matchinfo.game,
         event: {
             input: "dropdown",
+            category: "info",
             value: matchinfo.event,
             title: "Current competition",
             subtitle: "If you're at a practice match, select \"Practice Match\"",
@@ -131,6 +144,7 @@ router.route('/new/:matchstring')
         },
         compLevel: {
             input: "dropdown",
+            category: "info",
             value: matchinfo.compLevel,
             data: {
                 "qm": "Qualification Match",
@@ -144,6 +158,7 @@ router.route('/new/:matchstring')
         },
         match: {
             input: "number",
+            category: "info",
             value: matchinfo.match,
             title: "Match Number",
             subtitle: "The number of the match you are observing",
@@ -151,6 +166,7 @@ router.route('/new/:matchstring')
         },            
         team: {
             input: "number",
+            category: "info",
             value: matchinfo.team,
             title: "Team Number",
             subtitle: "This is the team number you are observing",
@@ -158,6 +174,7 @@ router.route('/new/:matchstring')
         },
         ...game.observationForm
     }
+    res.status(200).send({form: structure});
 })
 .post(async (req,res) => {
     req.body.user = req.user._id;
@@ -206,6 +223,7 @@ router.route('/id/:id')
         return res.status(400).send({error: err});
     }
 })
+
 
 // router.route("/event/:event/")
 

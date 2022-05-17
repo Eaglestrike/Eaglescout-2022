@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const config = require("../config/config");
 const utils = require("../utils/utils");
-const keys = require("./keys.json");
+const keys = require("../utils/keys");
 
 
 

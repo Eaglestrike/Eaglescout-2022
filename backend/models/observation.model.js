@@ -6,8 +6,8 @@ var observationFormSchema = {
         type: String,
         required: true
     },
-    year: {
-        type: Number,
+    game: {
+        type: String,
         required: true
     },
     event: {

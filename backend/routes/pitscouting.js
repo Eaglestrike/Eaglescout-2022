@@ -17,7 +17,7 @@ router.route("/list")
 })
 
 router.route('/id/:id')
-.get(async (res,res) => {
+.get(async (req,res) => {
     var pitSCouting = PitScouting.findById(req.params.id);
     if(!pitScouting) return res.status(400).send({error: "Pit Scouting observation not found"});
     res.status(200).send({msg: "Success", pitScouting: pitScouting});
@@ -30,10 +30,10 @@ router.route('/id/:id')
 
 router.route('/new')
 .get(async (req,res) => {
-    var game = await Game.findOne({year: parseInt(utils.getCurrentGame())})
-    if(!game) return res.status(400).send({error: "Could not find game of that year"});
+    var game = await Game.findOne({name: utils.getCurrentGame()})
+    if(!game) return res.status(400).send({error: "Unable to find game"});
     var structure = {
-        year: parseInt(utils.getCurrentGame()),
+        name: utils.getCurrentGame(),
         event: {
             input: "dropdown",
             placeholder: "Select a competition",

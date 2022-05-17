@@ -13,28 +13,27 @@ const genConfirmationCode = (len) => {
 	var letters="0123456789abcdefghijklmnopqrstuvwxyz"
 	var code = "";
 	for(var i = 0; i < len; i++){
-		code += String.fromCharCode(letters[Math.floor(Math.random()*36)])
+		code += letters[Math.floor(Math.random()*36)]
 	}
 	return code;
 }
 const readMatchString = (matchString) => {
 	/*
-	TBA match key with the format yyyy[EVENT_CODE]_[COMP_LEVEL]m[MATCH_NUMBER]t[TEAM_NUMBER],
-	 where yyyy is the year, and EVENT_CODE is the event code of the event,
+	TBA match key with the format [GAME_CODE]_[EVENT_CODE]_[COMP_LEVEL]_[MATCH_NUMBER]_[TEAM_NUMBER],
+	 where GAME_CODE is the game you are playing, and EVENT_CODE is the event code of the event,
 	 COMP_LEVEL is (qm, ef, qf, sf, f), and MATCH_NUMBER is the match number 
 	 in the competition level. A set number may be appended to the competition
 	 level if more than one match in required per set. */
 	var match = {};
 	try {
-		var year = parseInt(matchString.substring(0,4));
-		var temp1 = matchString.substring(4).split('_')
-		var event = temp1[0];
-		var temp2 = temp1.split('m')
-		var compLevel = temp2[0]
-		var match = parseInt(temp2[1].split('t')[0])
-		var team = temp2[1].split('t')[1]
+		var split = matchString.split('_')
+		var game = split[0];
+		var event = split[1];
+		var compLevel = split[2]
+		var match = parseInt(split[3])
+		var team = split[4]
 		return {
-			year: year,
+			game: game,
 			event: event,
 			compLevel: compLevel,
 			match: match,
