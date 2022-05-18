@@ -15,7 +15,7 @@ const Login = () => {
 
   useEffect(() => {
     if(user.user.loggedIn) navigate("/");
-  })
+  },[])
 
   const handleChange = (event) => {
 
@@ -28,7 +28,7 @@ const Login = () => {
   const handleSubmit = async (event) =>{
     event.preventDefault();
     try {
-      const user = await fetch(`http://${window.location.hostname}:5000/api/user/login`,
+      const loginUser = await fetch(`http://${window.location.hostname}:5000/api/user/login`,
       {
         method: 'POST',
         headers: {
@@ -37,15 +37,13 @@ const Login = () => {
         body: JSON.stringify(loginData)
         
       })
-      var data = await user.json();
+      var data = await loginUser.json();
       if(data.error) {
         setLoginFail(true);
         throw data.error;
       }
       console.log(data);
-      dispatch(login({
-        user: data.user,
-      }));
+      dispatch(login(data.user));
       dispatch( setToken(
         data.authToken
       ));

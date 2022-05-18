@@ -77,9 +77,7 @@ const ForgotPasswordToken = () => {
         throw data.error;
       }
       console.log(data);
-      dispatch(login({
-        user: data.user,
-      }));
+      dispatch(login(data.user,));
       dispatch(setToken(
         data.authToken
       ));

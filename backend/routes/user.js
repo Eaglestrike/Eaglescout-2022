@@ -84,10 +84,10 @@ router.route("/signup/email")
 .post(async (req,res) => {
     var user = await User.findOne({email: req.body.email});
     if(!user) return res.status(400).send({error: "User does not exist"});
+    if(user.status=='active') return res.status(400).send({error: "User is already activated"});
     await loginUtil.sendConfirmationEmail(req,user.email,user.confirmationCode);
     res.status(200).send({msg: "Successfully sent confirmation email"})
 })
-
 router.route("/signup/token/:token")
 .put(async (req,res) => {
     var code = req.params.token
@@ -101,7 +101,7 @@ router.route("/signup/token/:token")
     curUser.status = "active";
     await curUser.save();
     var token = await loginUtil.issueAuthToken(curUser.email);
-    res.status(200).send({"msg": "Success! Your email has been authenticated", authToken: token})
+    res.status(200).send({"msg": "Success! Your email has been authenticated", user: loginUtil.getUserInfo(user), authToken: token})
 })
 
 
