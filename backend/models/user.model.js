@@ -15,10 +15,12 @@ var UserSchema = mongoose.Schema({
 	},
 	name: {
 		first: {
-			type: String
+			type: String,
+			default: "",
 		},
 		last: {
-			type: String
+			type: String,
+			default: "",
 		}
 	},
 	role: {

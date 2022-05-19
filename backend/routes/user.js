@@ -101,7 +101,7 @@ router.route("/signup/token/:token")
     curUser.status = "active";
     await curUser.save();
     var token = await loginUtil.issueAuthToken(curUser.email);
-    res.status(200).send({"msg": "Success! Your email has been authenticated", user: loginUtil.getUserInfo(user), authToken: token})
+    res.status(200).send({"msg": "Success! Your email has been authenticated", user: loginUtil.getUserInfo(curUser), authToken: token})
 })
 
 

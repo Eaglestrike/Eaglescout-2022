@@ -100,6 +100,16 @@ const Signup = () => {
             This email is already being used x{emailUsed}
          </div>
         }
+        {signupData.password != signupData.confirmPassword && 
+        <div className="bg-warning mb-3 p-2">
+          Passwords must match
+        </div>
+        }
+        {signupData.password.length < 8 &&
+        <div className="bg-warning mb-3 p-2">
+            Password must be at least 8 characters long
+        </div>
+        }
         <div className="mb-3">
           <label htmlFor="emailInput" className="form-label">Email Address </label>
           <input type="email" name="email" className="form-control" id="emailInput" onChange={handleChange} />
@@ -112,7 +122,7 @@ const Signup = () => {
           <label htmlFor="confirmPasswordInput" className="form-label">Confirm Password </label>
           <input type="password" name="confirmPassword" className="form-control" id="confirmPasswordInput" onChange={handleChange} />
         </div>
-        <button type="submit" className="mb-3 btn btn-primary" disabled={handlingSubmit} onClick={handleSubmit}> Login </button>
+        <button type="submit" className="mb-3 btn btn-primary" disabled={handlingSubmit||signupData.password != signupData.confirmPassword || signupData.password.length < 8} onClick={handleSubmit}> Login </button>
         <div>
           <p className='forgot-password text-end'>
             <small>
@@ -127,9 +137,10 @@ const Signup = () => {
     {success && 
       <div>
         
-        Can't find the email? Click
-         < button type="submit" className="mb-3 btn btn-primary" disabled={handlingSubmit} onClick={resendEmail}>here</button>
-        to resend
+        Can't find the email? 
+        Click to resend
+        < div type="submit" className="mb-3" disabled={handlingSubmit} onClick={resendEmail}>here</div>
+
       </div>
     }
     </div>

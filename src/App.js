@@ -42,7 +42,7 @@ function App() {
     const fetchUser = async (token) => {
       var bearer = "bearer " + token;
       try{ 
-        const user = await fetch(`http://${window.location.hostname}:5000/api/user`,
+        const curUser = await fetch(`http://${window.location.hostname}:5000/api/user`,
         {
           method: "GET",
           withCredentials: true,
@@ -52,9 +52,8 @@ function App() {
             'Content-Type': 'application/json'
           }
         });
-        const data = await user.json();
+        const data = await curUser.json();
         if(data.error){
-          window.localStorage.setItem("authToken", "");
           dispatch(logout())
         }
         dispatch(
@@ -65,13 +64,14 @@ function App() {
         console.log(err);
       }
     }
-    if(!user.user.loggedIn){
-      var token = window.localStorage.getItem("authToken");
-      if(!token) return;
-      fetchUser(token)
-      .catch(console.error);
-    }
-  },[])
+    var token = user.userToken;
+    if(!token) {
+      dispatch(logout())
+      return;
+    };
+    fetchUser(token)
+    .catch(console.error);
+  }, [])
   return (
     <Router>
       

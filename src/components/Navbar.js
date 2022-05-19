@@ -1,7 +1,7 @@
 
-import {useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch} from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import {logout} from "../reducers/userSlice"
+import { logout } from '../reducers/userSlice'
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -16,8 +16,6 @@ const Navbar = () => {
     )
     userLogin();
   }
-
-
   return (
     
     <nav className='navbar navbar-expand-sm navbar-light bg-light'>
@@ -60,7 +58,7 @@ const Navbar = () => {
           (user.user.loggedIn) && 
             <div className="nav-item dropdown">
               <div className="dropdown-toggle" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Hi {user.user.name.first}!
+                Hi {user.user.name.first || ""}!
               </div>
               <div className="dropdown-menu" aria-labelledby="profileDropdown">
                 <Link to="/account" className="dropdown-item">Account</Link>

@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { login, setToken } from "../../reducers/userSlice"
 import "../../css/login.css"
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SignupCode = () => {
   const [codeIsValid, setCodeIsValid] = useState(false);
   const [fetchError, setFetchError] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  var user = useSelector(state => state.user);
   var dispatch = useDispatch();
+  var navigate = useNavigate(); 
   useEffect(() => {
+    if(user.user.loggedIn) navigate("/");
     const validateCode = async () => {
       const valid = await fetch(`http://${window.location.hostname}:5000/api/user/signup/token/${searchParams.get('code')}`,
       {
@@ -22,7 +25,9 @@ const SignupCode = () => {
       if(data.error) {
         setCodeIsValid(false);
         setFetchError(data.error);
+        return;
       }
+      setCodeIsValid(true);
       dispatch(login(data.user));
       dispatch(setToken(data.authToken));
     }
@@ -30,23 +35,33 @@ const SignupCode = () => {
     .catch(console.error)
   }, [])  
   return (
-    <div className="d-flex width-400 justify-content-center bg-light">
+    <div className="d-flex justify-content-center">
+      
+      <div className="width-400 bg-light p-3">
       { (codeIsValid) &&
-        <div className="bg-light"> 
-        <p>
+        <div > 
+        <h3>
         Successfully activated Account!
-        </p>
+        </h3>
         <p>
           Click <Link to="/">here</Link> to continue
         </p>
         </div>
       } 
+
       {
         fetchError != "" &&
-        <div className="">
+        <div>
+        <h3 className="mb-3">
           {fetchError}
+        </h3>
+        Back to {"\n"}
+        <Link to="/login">
+           Login
+        </Link>
         </div>
       }
+      </div>
     </div>
   )
 }

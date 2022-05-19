@@ -21,7 +21,7 @@ const sendConfirmationEmail = async (req, email, confirmationCode) => {
         subject: "Eaglescout Signup Confirmation",
         html: `<h1> Email Confirmation </h1>
         <p> Please follow 
-        <a href="${req.protocol}://${req.hostname}/signup/code?code=${confirmationCode}" target="_blank">
+        <a href="${req.protocol}://${req.hostname}:3000/signup/code?code=${confirmationCode}" target="_blank">
         Link</a> to confirm your email! </p>`
     })
     return;
