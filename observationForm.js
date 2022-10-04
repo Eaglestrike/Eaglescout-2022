@@ -160,12 +160,6 @@ var observationFormSchema = {
 		title: "[Auto] High goals scored",
 		subtitle: "How many balls were successfully scored in the high/upper goals during auto?"
 	},
-	auto_comments: {
-		type: String,
-		input: "long_text",
-		title: "[Auto] Extra comments",
-		subtitle: "Anything noteworthy that occurred during the autonomous period"
-	},
 	teleop_low_goals: {
 		type: String,
 		input: "increment_number",
@@ -234,12 +228,6 @@ var observationFormSchema = {
 		title: "[Teleop] Amount of time that robot was dead",
 		subtitle: "Max: 150. If the robot didn't die, leave this blank"
 	},
-	teleop_comments: {
-		type: String,
-		input: "long_text",
-		title: "[Teleop] Extra comments",
-		subtitle: "Write anything that might be noteworthy about teleop here."
-	},
 	time_on_defense: {
 		type: String,
 		input: "slider",
@@ -286,6 +274,18 @@ var observationFormSchema = {
 		},
 		title: "[Endgame] Time to climb",
 		subtitle: "Estimate the amount of time it took for robot to climb"
+	},
+	auto_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Auto] Extra comments",
+		subtitle: "Anything noteworthy that occurred during the autonomous period"
+	},
+	teleop_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Teleop] Extra comments",
+		subtitle: "Write anything that might be noteworthy about teleop here."
 	},
 	endgame_comments: {
 		type: String,
