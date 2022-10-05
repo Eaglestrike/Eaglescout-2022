@@ -120,3 +120,13 @@ Password: `team114`
 You can change this in `models/user.js` under the `createAdminUserIfNotExists` function. Alternatively, you can create a new admin user via the admin panel and delete the old one.
 
 Default port: 3000
+
+## Making Changes
+* To make changes, first run `ssh root@team114.org`
+* When prompted for a password, contact a captain for the proper credentials.
+* Clone the repository, make any changes you wish, and commit them to a separate branch (committing to main is not recommended for any significant changes).
+	* Push this local branch
+* While your ssh connection remains active, navigate to `/var/www/site`
+* Run `git pull origin/{branch_name}` to bring your latest branch to the server.
+* Changes will be immediately reflected on the website.
+* After your testing is finished, don't forget to pull the main or other stable branch, so your tests don't remain on the official website.
