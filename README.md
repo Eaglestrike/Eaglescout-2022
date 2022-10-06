@@ -126,7 +126,7 @@ Default port: 3000
 * When prompted for a password, contact a captain for the proper credentials.
 * Clone the repository, make any changes you wish, and commit them to a separate branch (committing to main is not recommended for any significant changes).
 	* Push this local branch
-* While your ssh connection remains active, navigate to `/var/www/site`
+* While your ssh connection remains active, navigate to `/var/www/scout` to adjust the scouting website, and `/var/www/site` to change the team114.org website.
 * Run `git pull origin/{branch_name}` to bring your latest branch to the server.
 * Changes will be immediately reflected on the website.
 * After your testing is finished, don't forget to pull the main or other stable branch, so your tests don't remain on the official website.
