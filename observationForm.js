@@ -349,6 +349,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 	var id = 0;
 
 	var finalString = '<form method="post" action="/scout/new">\n<div class="container">\n<div class="row">';
+	finalString += "<h1>THIS IS A TEST</h1>";
 	for (var category in structure) {
 		if (category == "events") continue;
 		finalString += '<p>';
