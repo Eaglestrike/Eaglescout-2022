@@ -2,7 +2,7 @@
 ## About
 Eaglescout is a web-based scouting system for FRC Team 114 (Eaglestrike). It is written in node.js, with packages express.js and passport.js. Styling is done in Handlebars, HTML, and CSS. Database is MongoDB.
 
-Latest development year: 2019.
+Latest development year: 2022.
 
 ## Dependencies
 * node.js
@@ -122,7 +122,7 @@ You can change this in `models/user.js` under the `createAdminUserIfNotExists` f
 Default port: 3000
 
 ## Making Changes
-* To make changes, first run `ssh root@team114.org`
+* To make changes, first run `ssh dev@team114.org`
 * When prompted for a password, contact a captain for the proper credentials.
 * Clone the repository, make any changes you wish, and commit them to a separate branch (committing to main is not recommended for any significant changes).
 	* Push this local branch
