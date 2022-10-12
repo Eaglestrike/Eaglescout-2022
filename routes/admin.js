@@ -1,5 +1,10 @@
 const express = require("express");
+
 const router = express.Router();
+var expressValidator = require("express-validator");
+router.use(expressValidator());
+
+
 const User = require("../models/user");
 const Observation = require("../models/observation");
 const utils = require("../utils");
