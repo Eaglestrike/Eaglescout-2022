@@ -253,7 +253,8 @@ router.post("/event", utils.ensureAdmin, function(req, res) {
 //  req.checkBody("event", "Please select an event!").notEmpty();
  body('event').notEmpty();
 
-  var errors = req.validationErrors();
+  // var errors = req.validationErrors();
+  var errors = validationResult(req);
   if (errors) {
     TBA.getEvents(events => {
       res.render("event", {
