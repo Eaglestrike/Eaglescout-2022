@@ -1,10 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-// var expressValidator = require("express-validator");
-// router.use(expressValidator());
 const { body, validationResult } = require("express-validator");
-
 
 const User = require("../models/user");
 const Observation = require("../models/observation");
@@ -246,7 +243,6 @@ router.post("/changepassword/:id", utils.ensureAdmin, function(req, res) {
   );
 });
 
-
 router.post("/event", utils.ensureAdmin, body("event").notEmpty(), (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -276,41 +272,5 @@ router.post("/event", utils.ensureAdmin, body("event").notEmpty(), (req, res) =>
     });
   }
 });
-
-
-
-
-// router.post("/event", utils.ensureAdmin, function(req, res) {
-//   var event = req.body.event;
-// //TODO: PUT THIS BACK IN WHEN WE FIGURE OUT WHY IT GIVES AN ERROR
-//  req.checkBody("event", "Please select an event!").notEmpty();
-
-//   var errors = req.validationErrors();
-//   if (errors) {
-//     TBA.getEvents(events => {
-//       res.render("event", {
-//         errors: errors,
-//         events: events
-//       });
-//     });
-//   } else {
-//     fs.readFile("./config/state.db", function(err, buf) {
-//       if (err) throw err;
-
-//       var json = JSON.parse(buf.toString());
-//       json["current_event"] = event;
-
-//       fs.writeFile("./config/state.db", JSON.stringify(json), function(
-//         error,
-//         data
-//       ) {
-//         if (error) throw error;
-
-//         req.flash("success_msg", "Successfully changed event.");
-//         res.redirect("/admin/event");
-//       });
-//     });
-//   }
-// });
 
 module.exports = router;
