@@ -247,20 +247,13 @@ router.post("/changepassword/:id", utils.ensureAdmin, function(req, res) {
 });
 
 
-router.post("/event", utils.ensureAdmin, function(req, res) {
-  var event = req.body.event;
-//TODO: PUT THIS BACK IN WHEN WE FIGURE OUT WHY IT GIVES AN ERROR
-//  req.checkBody("event", "Please select an event!").notEmpty();
- body('event').notEmpty();
-
-  // var errors = req.validationErrors();
-  var errors = validationResult(req);
-  console.log(errors);
-  if (errors) {
+router.post("/event", utils.ensureAdmin, body("event").notEmpty(), (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     TBA.getEvents(events => {
       res.render("event", {
-        errors: errors,
-        events: events
+        events: events,
+        errors: errors.array()
       });
     });
   } else {
@@ -282,6 +275,7 @@ router.post("/event", utils.ensureAdmin, function(req, res) {
     });
   }
 });
+
 
 
 
