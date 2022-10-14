@@ -1,5 +1,8 @@
 const express = require("express");
+
 const router = express.Router();
+const { body, validationResult } = require("express-validator");
+
 const User = require("../models/user");
 const Observation = require("../models/observation");
 const utils = require("../utils");
@@ -240,17 +243,13 @@ router.post("/changepassword/:id", utils.ensureAdmin, function(req, res) {
   );
 });
 
-router.post("/event", utils.ensureAdmin, function(req, res) {
-  var event = req.body.event;
-//TODO: PUT THIS BACK IN WHEN WE FIGURE OUT WHY IT GIVES AN ERROR
- // req.checkBody("event", "Please select an event!").notEmpty();
-
-  var errors = req.validationErrors();
-  if (errors) {
+router.post("/event", utils.ensureAdmin, body("event").notEmpty(), (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     TBA.getEvents(events => {
       res.render("event", {
-        errors: errors,
-        events: events
+        events: events,
+        errors: errors.array()
       });
     });
   } else {
@@ -258,6 +257,7 @@ router.post("/event", utils.ensureAdmin, function(req, res) {
       if (err) throw err;
 
       var json = JSON.parse(buf.toString());
+      var event = req.body.event;
       json["current_event"] = event;
 
       fs.writeFile("./config/state.db", JSON.stringify(json), function(
