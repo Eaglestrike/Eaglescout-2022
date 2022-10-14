@@ -255,6 +255,7 @@ router.post("/event", utils.ensureAdmin, function(req, res) {
 
   // var errors = req.validationErrors();
   var errors = validationResult(req);
+  console.log(errors);
   if (errors) {
     TBA.getEvents(events => {
       res.render("event", {
