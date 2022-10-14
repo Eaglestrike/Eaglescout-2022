@@ -261,6 +261,7 @@ router.post("/event", utils.ensureAdmin, body("event").notEmpty(), (req, res) =>
       if (err) throw err;
 
       var json = JSON.parse(buf.toString());
+      var event = req.body.event;
       json["current_event"] = event;
 
       fs.writeFile("./config/state.db", JSON.stringify(json), function(
