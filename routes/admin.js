@@ -56,7 +56,9 @@ router.post("/register", utils.ensureAdmin,
     return true;
   }),
 (req, res) => {
-
+  var email = req.body.email;
+  var password = req.body.password;
+  
   var errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.render("register", {
