@@ -50,7 +50,7 @@ router.post("/register", utils.ensureAdmin,
   body("email").isEmail(),
   body("password").notEmpty(),
   body("confirmPassword").custom((value, { req }) => {
-    if (Value !== req.body.password) {
+    if (value !== req.body.password) {
       throw new Error('Password confirmation does not match password');
     }
     return true;
