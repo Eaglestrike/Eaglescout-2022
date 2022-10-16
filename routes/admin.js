@@ -46,19 +46,19 @@ router.get("/clearobservations", utils.ensureAdmin, function(req, res) {
   });
 });
 
-router.post("/register", utils.ensureAdmin, function(req, res) {
-  var email = req.body.email;
-  var password = req.body.password;
-  var confirmPassword = req.body.confirmPassword;
+router.post("/register", utils.ensureAdmin,
+  body("email").isEmail(),
+  body("password").notEmpty(),
+  body("confirmPassword").custom((value, { req }) => {
+    if (Value !== req.body.password) {
+      throw new Error('Password confirmation does not match password');
+    }
+    return true;
+  }),
+(req, res) => {
 
-  req.checkBody("email", "Please enter a valid email!").isEmail();
-  req.checkBody("password", "Please enter a password!").notEmpty();
-  req
-    .checkBody("confirmPassword", "Passwords do not match.")
-    .equals(req.body.password);
-
-  var errors = req.validationErrors();
-  if (errors) {
+  var errors = validationResult(req);
+  if (!errors.isEmpty()) {
     res.render("register", {
       errors: errors
     });
