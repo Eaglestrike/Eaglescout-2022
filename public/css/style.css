@@ -142,11 +142,11 @@ input[type="range"] + .thumb.active .value {
 }
 
 .increment_number_plus_button {
-  background: url("/images/Group\ 2.png");
+  background-image: url("https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true");
 }
 
 .increment_number_minus_button {
-  background: url("/images/Group\ 4.png")
+  background: url("https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true")
 }
 
 #team-search {
