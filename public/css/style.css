@@ -141,13 +141,13 @@ input[type="range"] + .thumb.active .value {
   font-size: 1.7em;
 }
 
-.increment_number_plus_button {
+/* .increment_number_plus_button {
   background-image: url("https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true");
 }
 
 .increment_number_minus_button {
   background: url("https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true");
-}
+} */
 
 #team-search {
   text-align: center;
