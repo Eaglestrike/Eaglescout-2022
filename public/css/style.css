@@ -140,6 +140,15 @@ input[type="range"] + .thumb.active .value {
 .increment_number_plus_button {
   font-size: 1.7em;
 }
+
+.increment_number_plus_button {
+  background-image: url("/images/Group\ 2.png");
+}
+
+.increment_number_minus_button {
+  background-image: url("/images/Group\ 4.png")
+}
+
 #team-search {
   text-align: center;
   font-size: 2em;
