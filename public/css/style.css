@@ -143,13 +143,13 @@ input[type="range"] + .thumb.active .value {
 }
 
 .upper {
-  /*height: 337px;*/
-  width: 274px;
+  height: 337px;
+  /*width: 274px;*/
 }
 
 .lower {
-  /*height: 166px;*/
-  width: 275px;
+  height: 166px;
+  /*width: 275px;*/
 }
 
 /* .increment_number_plus_button {
@@ -193,8 +193,9 @@ input[type="range"] + .thumb.active .value {
 
 .box {
   /*display: flex;*/
+  display: block
   /*justify-content: space-between;*/
   /*display: */
-  margin: 0 auto;
-  width: 549px;
+  /*margin: 0 auto;*/
+  /*width: 549px;*/
 }
