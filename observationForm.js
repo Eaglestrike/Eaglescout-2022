@@ -409,12 +409,22 @@ function getObservationFormHandlebarsHelper(structure, options) {
 					// plus button
 					finalString += '<a class="btn increment_number_plus_button col s2 upper" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
 				}
-				finalString += '</div>\n';
+				// finalString += '</div>\n';
 				// input field
+				// finalString += '<div class="col s1"></div>';
 				finalString += '<div class="col s1"></div>';
 				finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
+				// finalString += '<div class="col s1"></div>';
 				finalString += '<div class="col s1"></div>';
 				finalString += '</div>\n';
+
+				////////////////////
+				// finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '">-</a>';
+				// finalString += '<div class="col s1"></div>';
+				// finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
+				// finalString += '<div class="col s1"></div>';
+				// finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_plus_button col s2" data-for="' + category + '">+</a>';
+
 			} else if (structure[category].input == "slider") {
 				finalString += '<p class="range-field">';
 			    finalString += '<input type="range" name="' + category + '" min="' + (structure[category].data)["min"] + '" max="' + (structure[category].data)["max"] + '" />';
