@@ -196,4 +196,5 @@ input[type="range"] + .thumb.active .value {
   /*justify-content: space-between;*/
   /*display: */
   margin: 0 auto;
+  width: 549px;
 }
