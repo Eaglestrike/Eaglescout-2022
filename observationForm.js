@@ -399,8 +399,9 @@ function getObservationFormHandlebarsHelper(structure, options) {
 			} else if (structure[category].input == "increment_number") {
 				finalString += '<div class="input-field row">\n';
 				// minus button
-				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
-				finalString += '<input class="waves-effect light-blue darken-3 waves-light increment_number_minus_button col s2" data-for="' + category + '" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true" type="image" name="abcdefg"';
+				// finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
+				finalString += '<a class="increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
+				// finalString += '<input class="waves-effect light-blue darken-3 waves-light increment_number_minus_button col s2" data-for="' + category + '" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true" type="image" name="abcdefg"';
 
 				// input field
 				finalString += '<div class="col s1"></div>';
@@ -408,7 +409,8 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<div class="col s1"></div>';
 
 				// plus button
-				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_plus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
+				// finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_plus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
+				finalString += '<a class="increment_number_plus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
           		finalString += '</div>\n';
 			} else if (structure[category].input == "slider") {
 				finalString += '<p class="range-field">';
