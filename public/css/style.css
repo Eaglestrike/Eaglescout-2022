@@ -191,10 +191,10 @@ input[type="range"] + .thumb.active .value {
   touch-action: manipulation;
 }
 
-.box {
-  /* center the elements in the box, and make sure they are on the same line at all times */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
+/*.box {*/
+/*  !* center the elements in the box, and make sure they are on the same line at all times *!*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    flex-wrap: wrap;*/
+/*}*/
