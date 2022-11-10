@@ -9,8 +9,8 @@ var TBA = require('./TBA');
 - long_text
 - multiple_choice [requires data]
 - checkbox [requires data]
-- number 
-- increment_number 
+- number
+- increment_number
 - slider [requires data]
 ********************/
 
@@ -216,7 +216,7 @@ var observationFormSchema = {
 		},
 		title: "[Teleop] Where balls are being shot from",
 		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
-	},	
+	},
 	teleop_robot_died: {
 		type: String,
 		input: "multiple_choice",
@@ -400,6 +400,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<div class="input-field row">\n';
 				// minus button
 				finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
+				finalString += '<input class="waves-effect light-blue darken-3 waves-light increment_number_minus_button col s2" data-for="' + category + '" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true" type="image" name="abcdefg"';
 
 				// input field
 				finalString += '<div class="col s1"></div>';
@@ -493,7 +494,7 @@ function getEditObservationHandlebarsHelper(observation, structure, observationI
 }
 
 function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, img, options){
-	var finalString = "";	
+	var finalString = "";
 	finalString+="<h2 class= 'med-text blue-text text-darken-4'> Observed Robot Capabilities: </h2>";
 	finalString += "<table>\n<thead>"
 	finalString += "<th class='no-padding'>Category</th>\n"
@@ -528,7 +529,7 @@ function getTeamSummaryHandlebarsHelper(teamAverage, teamCapabilities, img, opti
 		}
 		finalString+=teamCapabilities[category]+"</td></tr>";
 	}
-	
+
 	finalString += "</table></br>";
 	finalString += "<div><div id='col-small-table'><h2 class= 'med-text blue-text text-darken-4'> Average Points Generated: </h2>";
 	finalString += "<table class='small-table'>\n<thead>"
@@ -611,7 +612,7 @@ function getRankingHandlebarsHelper(structure, filter, options) {
 	rankingStructure = ['place'];
 	if(structure.length == 0) return;
 	for (var category in structure[0]) {
-		if (category==filter || category=='team') 
+		if (category==filter || category=='team')
 			finalString += "<th class='stickyy'>" + category[0].toUpperCase() + category.slice(1) + "</th>\n";
 		else{
 			finalString += "<th class='no-mobile stickyy'>" + category[0].toUpperCase() + category.slice(1) + "</th>\n";
@@ -630,7 +631,7 @@ function getRankingHandlebarsHelper(structure, filter, options) {
 				finalString += "<td><b><a href='/scout/list/" + structure[observation][data] + "'>" + structure[observation][data] + "</a></b></td>";
 				continue;
 			} else {
-				if (filter == data) 
+				if (filter == data)
 					finalString += "<td>" + structure[observation][data] + "</td>";
 				else{
 					finalString += "<td class='no-mobile'>" + structure[observation][data] + "</td>";
