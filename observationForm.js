@@ -401,14 +401,14 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<div class="box">\n';
 				if (structure[category].title.includes("Low")) {
 					// minus button
-					finalString += '<a class="btn increment_number_minus_button col s2 lower" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_minus.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_minus_button s2 lower" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_minus.png?raw=true"></a>';
 					// plus button
-					finalString += '<a class="btn increment_number_plus_button col s2 lower" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_plus.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_plus_button s2 lower" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_plus.png?raw=true"></a>';
 				} else {
 					// minus button
-					finalString += '<a class="btn increment_number_minus_button col s2 upper" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_minus_button s2 upper" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
 					// plus button
-					finalString += '<a class="btn increment_number_plus_button col s2 upper" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_plus_button s2 upper" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
 				}
 				finalString += '</div>\n';
 
