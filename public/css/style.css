@@ -142,25 +142,25 @@ input[type="range"] + .thumb.active .value {
   /*width: 274px;*/
 }
 
-/*.upper {*/
-/*    height: 337px;*/
-/*    width: 100%;*/
-/*  !*  !*height: 100%*!*!*/
-/*  !*  !*width: 274px;*!*!*/
-/*  !*  !*width: 100%;*!*!*/
-/*  !*  max-width: 100%;*!*/
-/*  !*  height: auto;*!*/
-/*}*/
+.upper {
+    /*height: 337px;*/
+    width: 100%;
+  /*  !*height: 100%*!*/
+  /*  !*width: 274px;*!*/
+  /*  !*width: 100%;*!*/
+  /*  max-width: 100%;*/
+  /*  height: auto;*/
+}
 
-/*.lower {*/
-/*  height: 166px;*/
-/*  width: 100%;*/
-/*!*  !*height: 100%*!*!*/
-/*!*  !*width: 275px;*!*!*/
-/*!*  !*width: 100%;*!*!*/
-/*!*  max-width: 100%;*!*/
-/*!*  height: auto;*!*/
-/*}*/
+.lower {
+  /*height: 166px;*/
+  width: 100%;
+/*  !*height: 100%*!*/
+/*  !*width: 275px;*!*/
+/*  !*width: 100%;*!*/
+/*  max-width: 100%;*/
+/*  height: auto;*/
+}
 
 /* .increment_number_plus_button {
   background-image: url("https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true");
