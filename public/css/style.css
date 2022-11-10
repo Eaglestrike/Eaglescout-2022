@@ -181,3 +181,8 @@ input[type="range"] + .thumb.active .value {
 .btn {
   touch-action: manipulation;
 }
+
+.box {
+  display: flex;
+  justify-content: space-between;
+}

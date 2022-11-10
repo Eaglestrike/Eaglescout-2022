@@ -397,7 +397,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<input class="validate" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number">\n';
           		finalString += '</div>\n';
 			} else if (structure[category].input == "increment_number") {
-				finalString += '<div class="input-field row">\n';
+				finalString += '<div class="input-field row box">\n';
 				// minus button
 				// finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
 				finalString += '<a class="btn increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
@@ -407,13 +407,12 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				// plus button
 				// finalString += '<a class="waves-effect light-blue darken-3 waves-light btn increment_number_plus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
 				finalString += '<a class="btn increment_number_plus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
-				finalString += '\n';
+          		finalString += '</div>\n';
 
 				// input field
 				finalString += '<div class="col s1"></div>';
 				finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
 				finalString += '<div class="col s1"></div>';
-				finalString += '</div>\n';
 				finalString += '</div>\n';
 			} else if (structure[category].input == "slider") {
 				finalString += '<p class="range-field">';
