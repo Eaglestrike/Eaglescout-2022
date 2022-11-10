@@ -144,8 +144,8 @@ input[type="range"] + .thumb.active .value {
 
 .upper {
     /*height: 337px;*/
-    width: 100%;
-  /*  !*height: 100%*!*/
+    /*width: 100%;*/
+    height: 100%
   /*  !*width: 274px;*!*/
   /*  !*width: 100%;*!*/
   /*  max-width: 100%;*/
@@ -154,8 +154,8 @@ input[type="range"] + .thumb.active .value {
 
 .lower {
   /*height: 166px;*/
-  width: 100%;
-/*  !*height: 100%*!*/
+  /*width: 100%;*/
+  height: 100%
 /*  !*width: 275px;*!*/
 /*  !*width: 100%;*!*/
 /*  max-width: 100%;*/
