@@ -140,7 +140,14 @@ input[type="range"] + .thumb.active .value {
 .increment_number_plus_button {
   font-size: 1.7em;
   /*width: 274px;*/
+}
+
+.upper {
   height: 337px;
+}
+
+.lower {
+  height: 166px;
 }
 
 /* .increment_number_plus_button {
