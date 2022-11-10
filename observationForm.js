@@ -397,6 +397,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<input class="validate" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number">\n';
           		finalString += '</div>\n';
 			} else if (structure[category].input == "increment_number") {
+				finalString += '<div class="input-field">\n';
 				finalString += '<div class="box">\n';
 				if (structure[category].title.includes("Low")) {
 					// minus button
@@ -417,6 +418,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
 				finalString += '<div class="col s1"></div>';
 
+				finalString += '</div>\n';
 			} else if (structure[category].input == "slider") {
 				finalString += '<p class="range-field">';
 			    finalString += '<input type="range" name="' + category + '" min="' + (structure[category].data)["min"] + '" max="' + (structure[category].data)["max"] + '" />';
