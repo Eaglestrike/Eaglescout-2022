@@ -213,7 +213,4 @@ input[type="range"] + .thumb.active .value {
     justify-content: space-around;
     align-items: center;
     align-content: center;
-    /* make the div the same size as the images */
-    width: 100%;
-    height: 100%;
 }
