@@ -142,15 +142,17 @@ input[type="range"] + .thumb.active .value {
   /*width: 274px;*/
 }
 
-/*.upper {*/
-/*  height: 337px;*/
-/*  !*width: 274px;*!*/
-/*}*/
+.upper {
+  /*height: 337px;*/
+  height: 100%
+  /*width: 274px;*/
+}
 
-/*.lower {*/
-/*  height: 166px;*/
-/*  !*width: 275px;*!*/
-/*}*/
+.lower {
+  /*height: 166px;*/
+  height: 100%
+  /*width: 275px;*/
+}
 
 /* .increment_number_plus_button {
   background-image: url("https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true");
