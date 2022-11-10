@@ -207,9 +207,9 @@ input[type="range"] + .thumb.active .value {
     flex-direction: row;
   /* scale the images within this div to fit the div */
     flex-wrap: nowrap;
-    justify-content: space-around;
-    align-items: center;
-    align-content: center;
+    justify-content: space-between;
+    /*align-items: center;*/
+    /*align-content: center;*/
 }
 
 .im {
