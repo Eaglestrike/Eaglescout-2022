@@ -398,7 +398,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
           		finalString += '</div>\n';
 			} else if (structure[category].input == "increment_number") {
 				finalString += '<div class="box">\n';
-				if (structure[category].title.contains("Low")) {
+				if (structure[category].title.includes("Low")) {
 					// minus button
 					finalString += '<a class="btn increment_number_minus_button col s2" data-for="' + category + '"><img src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_minus.png?raw=true"></a>';
 					// plus button
