@@ -417,6 +417,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				// finalString += '<div class="col s1"></div>';
 				finalString += '<div class="row s1"></div>';
 				finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
+				finalString += '<div class="row s1"></div>\n';
 				// finalString += '<div class="col s1"></div>';
 
 				// finalString += '</div>\n';
