@@ -209,19 +209,19 @@ var observationFormSchema = {
 		title: "[Endgame] Time to climb",
 		subtitle: "Estimate the amount of time it took for robot to climb"
 	},
-	teleop_eject_balls: {
-		type: String,
-		input: "checkbox",
-		placeholder: "Select all that apply",
-		data: {
-			"seperate_eject": "Yes, could eject with a separate mechanism automatically",
-			"shooting_eject_auto": "Yes, ejected with the shooter automatically",
-			"shooting_eject_manual": "Yes, ejected with the shooter manually",
-			"cannot_eject": "Fired wrong color balls in",
-		},
-		title: "[Game] Did they have a thing to eject wrong color balls?",
-		subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
-	},
+	// teleop_eject_balls: {
+	// 	type: String,
+	// 	input: "checkbox",
+	// 	placeholder: "Select all that apply",
+	// 	data: {
+	// 		"seperate_eject": "Yes, could eject with a separate mechanism automatically",
+	// 		"shooting_eject_auto": "Yes, ejected with the shooter automatically",
+	// 		"shooting_eject_manual": "Yes, ejected with the shooter manually",
+	// 		"cannot_eject": "Fired wrong color balls in",
+	// 	},
+	// 	title: "[Game] Did they have a thing to eject wrong color balls?",
+	// 	subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
+	// },
 	teleop_shoot_balls: {
 		type: String,
 		input: "checkbox",
