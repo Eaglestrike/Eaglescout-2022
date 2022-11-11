@@ -400,20 +400,20 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				finalString += '<div class="box">\n';
 				if (structure[category].title.includes("Low")) {
 					// minus button
-					finalString += '<a class="btn increment_number_minus_button s2 lower" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_minus.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_minus_button s2 lower" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/main/images/lower_minus.png?raw=true"></a>';
 					finalString += '<div class="col s1"></div>';
 					finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
 					finalString += '<div class="col s1"></div>\n';
 					// plus button
-					finalString += '<a class="btn increment_number_plus_button s2 lower" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/lower_plus.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_plus_button s2 lower" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/main/images/lower_plus.png?raw=true"></a>';
 				} else {
 					// minus button
-					finalString += '<a class="btn increment_number_minus_button s2 upper" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%204.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_minus_button s2 upper" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/main/images/Group%204.png?raw=true"></a>';
 					finalString += '<div class="col s1"></div>';
 					finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
 					finalString += '<div class="col s1"></div>\n';
 					// plus button
-					finalString += '<a class="btn increment_number_plus_button s2 upper" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/button-change/images/Group%202.png?raw=true"></a>';
+					finalString += '<a class="btn increment_number_plus_button s2 upper" data-for="' + category + '"><img class="im" src="https://github.com/Eaglestrike/Eaglescout-2022/blob/main/images/Group%202.png?raw=true"></a>';
 				}
 				finalString += '</div>\n';
 
