@@ -38,7 +38,7 @@ router.get('/list', utils.ensureAuthenticated, function(req, res) {
 				"current": false
 			})
 			for(var i in events){
-				events[i].current = false;			
+				events[i].current = false;
 				for(var event in cur_events){
 					if(events[i].key == cur_events[event]){
 						events[i].current = true;
@@ -53,7 +53,7 @@ router.get('/list', utils.ensureAuthenticated, function(req, res) {
 			});
 		});
 		// observations = [];
-		
+
 	});
 })
 
@@ -79,7 +79,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		observations.sort(function(a,b) {
 			return a.team - b.team;
 		});
-			
+
 	//maxes
 	var games_played = 0;
 	var robotCapabilities = {
@@ -109,14 +109,14 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 	};
 	function removeDuplicates(a) {
 		for(var i=0; i<a.length; ++i) {
-			if(a[i] == "" || a[i]==undefined) 
+			if(a[i] == "" || a[i]==undefined)
 				a.splice(i--,1);
 			for(var j=i+1; j<a.length; ++j) {
 				if(a[i] === a[j])
 					a.splice(j--, 1);
 			}
 		}
-	
+
 		return a;
 	};
 	for(var observation in observations){
@@ -146,7 +146,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 				}
 			}
 		}
-		
+
 		for(var key in robotAverages){
 			if(observations[observation][key] == null || observations[observation][key] == undefined ||observations[observation][key]=="") continue;
 			if(typeof(summary.capabilities[key]) == 'object'){
@@ -156,7 +156,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 				robotAverages[key] += summary.gamePoints[key] * parseInt(observations[observation][key]);
 			}
 		}
-		
+
 	}
 	for(var key in robotCapabilities){
 		if(typeof(summary.capabilities[key]) == 'object'){
@@ -170,14 +170,14 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 		}
 	}
 	sum = 0;
-	
+
 	for(var key in robotAverages){
 		if(key == 'points_generated'){
 			continue;
 		}
 		sum+=robotAverages[key];
 		robotAverages[key] = robotAverages[key]/games_played;
-		
+
 	}
 	robotAverages['points_generated'] = sum/games_played;
 	TBA.getEvents(events => {
@@ -187,7 +187,7 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 			"current": false
 		})
 		for(var i in events){
-			events[i].current = false;			
+			events[i].current = false;
 			for(var event in cur_events){
 				if(events[i].key == cur_events[event]){
 					events[i].current = true;
@@ -205,9 +205,9 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 				team: req.params.team,
 				img: image
 			});
-		});		
-	});	
-	});	
+		});
+	});
+	});
 });
 
 router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
@@ -245,10 +245,10 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				else if(multipliers.structure[category] == 'number'){
 					rankings[team][category] += parseInt(observations[observation][category]);
 				}
-				
+
 				else if(multipliers.structure[category] == 'num-yes'){
 					rankings[team][category] += (parseInt(observations[observation][category]) > 0) *1;
-				}				
+				}
 			}
 		}
 		var points = [];
@@ -279,7 +279,7 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 				"current": false
 			})
 			for(var i in events){
-				events[i].current = false;			
+				events[i].current = false;
 				for(var event in cur_events){
 					if(events[i].key == cur_events[event]){
 						events[i].current = true;
@@ -298,7 +298,7 @@ router.get('/teamranking', utils.ensureAuthenticated, function(req, res) {
 			});
 		});
 	});
-	
+
 });
 
 router.get('/csv', utils.ensureAuthenticated, function(req, res) {
@@ -334,6 +334,7 @@ router.get('/new', utils.ensureAuthenticated, function(req, res) {
 	});
 });
 
+// This is called when the user submits an observation form.
 router.post('/new', utils.ensureAuthenticated, function(req, res) {
 	req.body.user = res.locals.user.email;
 	delete req.body.action;
@@ -417,7 +418,7 @@ router.get('/delobservation/:id', utils.ensureAuthenticated, function(req, res) 
 router.post('/saveobservation/:id', utils.ensureAuthenticated, function(req, res) {
 	req.body.user = res.locals.user.email;
 	delete req.body.action;
-	
+
 	Observation.findOneAndUpdate({
 		"_id": req.params.id
 	}, req.body, function (err) {
