@@ -146,13 +146,6 @@ var observationFormSchema = {
 		subtitle: "Did they drive outside the tarmac?"
 
 	},
-	auto_low_goals: {
-		type: String,
-		input: "increment_number",
-		placeholder: "Number only",
-		title: "[Auto] Low goals scored",
-		subtitle: "How many balls were successfully scored in the low goal during auto?"
-	},
 	auto_high_goals: {
 		type: String,
 		input: "increment_number",
@@ -160,18 +153,12 @@ var observationFormSchema = {
 		title: "[Auto] High goals scored",
 		subtitle: "How many balls were successfully scored in the high/upper goals during auto?"
 	},
-	auto_comments: {
-		type: String,
-		input: "long_text",
-		title: "[Auto] Extra comments",
-		subtitle: "Anything noteworthy that occurred during the autonomous period"
-	},
-	teleop_low_goals: {
+	auto_low_goals: {
 		type: String,
 		input: "increment_number",
 		placeholder: "Number only",
-		title: "[Teleop] Low goals scored",
-		subtitle: "How many balls were successfully scored in the low goal during teleop?"
+		title: "[Auto] Low goals scored",
+		subtitle: "How many balls were successfully scored in the low goal during auto?"
 	},
 	teleop_high_goals: {
 		type: String,
@@ -179,6 +166,13 @@ var observationFormSchema = {
 		placeholder: "Number only",
 		title: "[Teleop] High goals scored",
 		subtitle: "How many balls were successfully scored in the high goal during teleop?"
+	},
+	teleop_low_goals: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Teleop] Low goals scored",
+		subtitle: "How many balls were successfully scored in the low goal during teleop?"
 	},
 	teleop_shot_accuracy: {
 		type: String,
@@ -189,78 +183,6 @@ var observationFormSchema = {
 		},
 		title: "[Teleop] Shot Accuracy",
 		subtitle: "Approximate their shot accuracy as a percentage"
-	},
-	teleop_eject_balls: {
-		type: String,
-		input: "checkbox",
-		placeholder: "Select all that apply",
-		data: {
-			"seperate_eject": "Yes, could eject with a seperate mechanism automatically",
-			"shooting_eject_auto": "Yes, ejected with the shooter automatically",
-			"shooting_eject_manual": "Yes, ejected with the shooter manually",
-			"cannot_eject": "Fired wrong color balls in",
-		},
-		title: "[Teleop] Did they have a thing to eject wrong color balls?",
-		subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
-	},
-	teleop_shoot_balls: {
-		type: String,
-		input: "checkbox",
-		placeholder: "Select all that apply",
-		data: {
-			"launch_pad": "Completely within the Protected Zone / Launch Pad",
-			"tarmac": "The Tarmac (Colored zone in front of the hub)",
-			"terminal": "From the terminal",
-			"wherever": "Litearlly wherever they want to",
-			"one_position": "One set area they have to shoot from, elaborate in comments",
-		},
-		title: "[Teleop] Where balls are being shot from",
-		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
-	},
-	teleop_robot_died: {
-		type: String,
-		input: "multiple_choice",
-		data: {
-			"yes": "Yes",
-			"no": "No"
-		},
-		title: "[Teleop] Did the robot die?",
-		subtitle: "If they did, note the time of death for the next question"
-	},
-	teleop_time_robot_died: {
-		type: String,
-		input: "number",
-		placeholder: "Format: number of seconds only",
-		title: "[Teleop] Amount of time that robot was dead",
-		subtitle: "Max: 150. If the robot didn't die, leave this blank"
-	},
-	teleop_comments: {
-		type: String,
-		input: "long_text",
-		title: "[Teleop] Extra comments",
-		subtitle: "Write anything that might be noteworthy about teleop here."
-	},
-	time_on_defense: {
-		type: String,
-		input: "slider",
-		data: {
-			"min": 0,
-			"max": 100
-		},
-		title: "[Defense] Percent of time on defense",
-		subtitle: "Approximate percent of time on defense"
-	},
-	speed: {
-		type: String,
-		input: "dropdown",
-		data: {
-			"slow": "Slow (lower than 8 ft/second)",
-			"medium": "Medium (8 ft/second to 15 ft/second)",
-			"fast": "Fast (greater than 15 ft/second)",
-		},
-		placeholder: "Select one",
-		title: "[Bot] Speed compared to our robot (18 ft/second)",
-		subtitle: "Approximate this if you can"
 	},
 	endgame_climb: {
 		type: String,
@@ -287,11 +209,71 @@ var observationFormSchema = {
 		title: "[Endgame] Time to climb",
 		subtitle: "Estimate the amount of time it took for robot to climb"
 	},
-	endgame_comments: {
+	teleop_eject_balls: {
 		type: String,
-		input: "long_text",
-		title: "[Endgame] Any extra comments about the end of the game?",
-		subtitle: "Put anything that would be noteworthy about the end of the game here."
+		input: "checkbox",
+		placeholder: "Select all that apply",
+		data: {
+			"seperate_eject": "Yes, could eject with a separate mechanism automatically",
+			"shooting_eject_auto": "Yes, ejected with the shooter automatically",
+			"shooting_eject_manual": "Yes, ejected with the shooter manually",
+			"cannot_eject": "Fired wrong color balls in",
+		},
+		title: "[Game] Did they have a thing to eject wrong color balls?",
+		subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
+	},
+	teleop_shoot_balls: {
+		type: String,
+		input: "checkbox",
+		placeholder: "Select all that apply",
+		data: {
+			"launch_pad": "Completely within the Protected Zone / Launch Pad",
+			"tarmac": "The Tarmac (Colored zone in front of the hub)",
+			"terminal": "From the terminal",
+			"wherever": "Literally wherever they want to",
+			"one_position": "One set area they have to shoot from, elaborate in comments",
+		},
+		title: "[Game] Where balls are being shot from",
+		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
+	},
+	teleop_robot_died: {
+		type: String,
+		input: "multiple_choice",
+		data: {
+			"yes": "Yes",
+			"no": "No"
+		},
+		title: "[Teleop] Did the robot die?",
+		subtitle: "If they did, note the time of death for the next question"
+	},
+	teleop_time_robot_died: {
+		type: String,
+		input: "number",
+		placeholder: "Format: number of seconds only",
+		title: "[Game] Amount of time that robot was dead",
+		subtitle: "Max: 150. If the robot didn't die, leave this blank"
+	},
+	time_on_defense: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 0,
+			"max": 100
+		},
+		title: "[Defense] Percent of time on defense",
+		subtitle: "Approximate percent of time on defense"
+	},
+	speed: {
+		type: String,
+		input: "dropdown",
+		data: {
+			"slow": "Slow (lower than 8 ft/second)",
+			"medium": "Medium (8 ft/second to 15 ft/second)",
+			"fast": "Fast (greater than 15 ft/second)",
+		},
+		placeholder: "Select one",
+		title: "[Bot] Speed compared to our robot (18 ft/second)",
+		subtitle: "Approximate this if you can"
 	},
 	driver_skill: {
 		type: String,
@@ -302,6 +284,24 @@ var observationFormSchema = {
 		},
 		title: "Driver Skill",
 		subtitle: "On a scale from 1 (very bad) - 5 (very good), please rate how good the driving was"
+	},
+	auto_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Auto] Extra comments",
+		subtitle: "Anything noteworthy that occurred during the autonomous period"
+	},
+	teleop_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Teleop] Extra comments",
+		subtitle: "Write anything that might be noteworthy about teleop here."
+	},
+	endgame_comments: {
+		type: String,
+		input: "long_text",
+		title: "[Endgame] Any extra comments about the end of the game?",
+		subtitle: "Put anything that would be noteworthy about the end of the game here."
 	},
 	final_comments: {
 		type: String,
