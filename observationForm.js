@@ -129,7 +129,7 @@ var observationFormSchema = {
 	},
 	team: {
 		type: String,
-		input: "number",
+		input: "short_text",
 		placeholder: "Team number only",
 		title: "Team Number",
 		subtitle: "This is the team number that you are observing"
