@@ -142,11 +142,11 @@ input[type="range"] + .thumb.active .value {
 }
 
 .upper {
-    height: 100%
+  height: 100%;
 }
 
 .lower {
-  height: 100%
+  height: 100%;
 }
 
 #team-search {
@@ -182,15 +182,34 @@ input[type="range"] + .thumb.active .value {
 
 .box {
   /*put the elements within the box on the same line*/
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 /* This code scales the images to fit the box */
 .im {
   width: 100%;
   height: 100%;
-    object-fit: cover;
+  object-fit: cover;
+}
+
+/* Adjust SVG Buttons */
+.btn path {
+  fill: #26a69a !important;
+
+  -webkit-transition: 0.2s ease-out;
+  transition: 0.2s ease-out;
+}
+.btn:hover path {
+  fill: #2bbbad !important;
+}
+
+/* make SVG text non-selectable */
+svg text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
