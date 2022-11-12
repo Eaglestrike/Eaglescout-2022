@@ -428,7 +428,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 					finalString += '<div class="s6">';
 					finalString += '<svg width="100%" height="100%" viewBox="0 0 2000 2250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style=" fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; " >';
 					finalString += '<a class="btn increment_number_minus_button upper" data-for="' + category + '">';
-					finalString += '<g transform="matrix(1,0,0,1,-500,-500)"> <path d="M500,550C500,536.739 505.268,524.021 514.645,514.645C524.021,505.268 536.739,500 550,500L2450,500C2463.26,500 2475.98,505.268 2485.36,514.645C2494.73,524.021 2500,536.739 2500,550L2500,2475C2500,2488.26 2494.73,2500.98 2485.36,2510.36C2475.98,2519.73 2463.26,2525 2450,2525L1332.12,2525C1312.55,2525 1294.78,2513.59 1286.65,2495.79C1187.16,2278.16 500,550 500,550Z" style="fill: rgb(38, 166, 154)" /> </g> <rect x="1061" y="987.5" width="357.422" height="50" />';
+					finalString += '<g transform="matrix(1,0,0,1,-500,-500)"> <path d="M500,550C500,536.739 505.268,524.021 514.645,514.645C524.021,505.268 536.739,500 550,500L2450,500C2463.26,500 2475.98,505.268 2485.36,514.645C2494.73,524.021 2500,536.739 2500,550L2500,2700C2500,2713.26 2494.73,2725.98 2485.36,2735.36C2475.98,2744.73 2463.26,2750 2450,2750L1332.12,2750C1312.55,2750 1294.78,2738.59 1286.65,2720.79C1187.16,2503.16 563.811,1139.59 504.526,1009.9C501.544,1003.38 500,996.287 500,989.113L500,550Z" style="fill: rgb(38, 166, 154)" /> </g> <rect x="1000" y="1100" width="357.417" height="50" />';
 					finalString += '</a>';
 					finalString += '</svg>';
 					finalString += '</div>';
