@@ -20,7 +20,7 @@
     "express-validator": "*",
     "mongodb": "*",
     "mongoose": "*",
-    "mongoose-csv": "^1.1.0",
+    "mongoose-csv-export": "^1.0.0",
     "passport": "*",
     "passport-http": "*",
     "passport-local": "*"

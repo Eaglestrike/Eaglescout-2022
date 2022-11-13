@@ -321,7 +321,10 @@ router.get('/csv', utils.ensureAuthenticated, function(req, res) {
         'Content-Type': 'text/csv',
         'Content-Disposition': 'attachment; filename='+'observations.csv'
     });
-    Observation.find(filter).csv(res);
+	Observation.find(filter, function(err, docs) {
+		if (err) throw err;
+		Observation.csvReadStream(docs).pipe(res);
+	})
 });
 
 router.get('/new', utils.ensureAuthenticated, function(req, res) {
