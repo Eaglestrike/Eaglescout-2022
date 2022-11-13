@@ -121,6 +121,9 @@ You can change this in `models/user.js` under the `createAdminUserIfNotExists` f
 
 Default port: 3000
 
+# Secrets
+You need a secrets.json file to run the app. It contains API keys and other secrets needed to run this app. Contact a captain for the file.
+
 ## Making Changes
 * To make changes, first run `ssh dev@team114.org`
 * When prompted for a password, contact a captain for the proper credentials.
