@@ -243,7 +243,7 @@ var observationFormSchema = {
 			"yes": "Yes",
 			"no": "No"
 		},
-		title: "[Teleop] Did the robot die?",
+		title: "[Game] Did the robot die?",
 		subtitle: "If they did, note the time of death for the next question"
 	},
 	teleop_time_robot_died: {
@@ -349,20 +349,34 @@ function getObservationFormHandlebarsHelper(structure, options) {
 	var id = 0;
 
 	var finalString = '<form method="post" action="/scout/new">\n<div class="container">\n<div class="row">';
+	// write a dividing line as a div
+	finalString += '<div class="col-md-12"><hr></div>';
+	let currState = "auto";
+	let prevState = currState;
 	for (var category in structure) {
 		if (category == "events") continue;
-		finalString += '<p>';
+		let sID = ""
 		const title = structure[category].title;
+		prevState = currState;
 		if (title.includes("Auto")) {
-			finalString += '<b id="auto">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+			sID = "auto";
+			currState = "auto";
 		} else if (title.includes("Teleop")) {
-			finalString += '<b id="teleop">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+			sID = "teleop";
+			currState = "teleop";
 		} else if (title.includes("Endgame")) {
-			finalString += '<b id="endgame">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+			sID = "endgame";
+			currState = "endgame";
 		} else {
-			finalString += '<b>' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+			currState = "other";
 		}
+		if (prevState !== currState) {
+			finalString += '<div class="col-md-12"><hr></div>';
+		}
+		finalString += '<p>';
+		finalString += '<b id="' + sID + '">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
 		finalString += '</p>';
+
 		if (category == "competition") {
 			finalString += '<select name="competition">\n';
 			finalString += '<option value="" disabled ' + (utils.getCurrentEvent() == null ? 'selected' : '') + '>Choose event from list</option>\n';
