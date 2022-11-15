@@ -213,3 +213,8 @@ svg text {
   -ms-user-select: none;
   user-select: none;
 }
+
+/* make a div that spreads out all elements in the box */
+.spread {
+  flex-grow: 1;
+}

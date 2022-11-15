@@ -352,7 +352,16 @@ function getObservationFormHandlebarsHelper(structure, options) {
 	for (var category in structure) {
 		if (category == "events") continue;
 		finalString += '<p>';
-		finalString += '<b>' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		const title = structure[category].title;
+		if (title.includes("Auto")) {
+			finalString += '<b id="auto">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		} else if (title.includes("Teleop")) {
+			finalString += '<b id="teleop">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		} else if (title.includes("Endgame")) {
+			finalString += '<b id="endgame">' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		} else {
+			finalString += '<b>' + structure[category].title + '</b>\n<br>\n' + structure[category].subtitle + '\n';
+		}
 		finalString += '</p>';
 		if (category == "competition") {
 			finalString += '<select name="competition">\n';
@@ -457,7 +466,7 @@ function getObservationFormHandlebarsHelper(structure, options) {
 				// finalString += '<input class="validate increment_number col s6" placeholder="' + structure[category].placeholder + '" name="' + category + '" type="number" value="0">\n';
 				// finalString += '<div class="row s1"></div>\n';
 			} else if (structure[category].input == "slider") {
-				finalString += '<p class="range-field">';
+				finalString += '<p id="testr" class="range-field">';
 			    finalString += '<input type="range" name="' + category + '" min="' + (structure[category].data)["min"] + '" max="' + (structure[category].data)["max"] + '" />';
 			    finalString += '</p>';
 			}
