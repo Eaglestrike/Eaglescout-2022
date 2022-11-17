@@ -9,20 +9,20 @@
   "author": "Jamsheed Mistri",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "*",
-    "body-parser": "*",
-    "connect-flash": "*",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.1",
-    "express": "*",
-    "express-handlebars": "*",
-    "express-messages": "*",
-    "express-session": "*",
-    "express-validator": "*",
-    "mongodb": "*",
-    "mongoose": "*",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^5.3.1",
+    "mongodb": "^4.12.0",
+    "mongoose": "^6.7.2",
     "mongoose-csv-export": "^1.0.0",
-    "passport": "*",
-    "passport-http": "*",
-    "passport-local": "*"
+    "passport": "^0.6.0",
+    "passport-http": "^0.3.0",
+    "passport-local": "^1.0.0"
   }
 }
