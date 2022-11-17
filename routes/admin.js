@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-const { body, validationResult } = require("express-validator");
+const { body, validationResult, check } = require("express-validator");
 
 const User = require("../models/user");
 const Observation = require("../models/observation");
@@ -96,10 +96,10 @@ router.post("/bulkimport", utils.ensureAdmin, async function(req, res) {
   var textbox = req.body.bulkimport;
   var password = req.body.password;
 
-  req.checkBody("password", "Please enter a password!").notEmpty();
+  await check("password", "Please enter a password!").notEmpty.run(req);
 
-  var errors = req.validationErrors();
-  if (errors) {
+  var errors = validationResult(req);
+  if (!errors.isEmpty()) {
     req.flash("error_msg", "Please enter a password!");
     res.redirect("/admin/bulkimport");
   } else {
@@ -222,16 +222,13 @@ router.post("/changepassword/:id", utils.ensureAdmin, function(req, res) {
     {
       _id: req.params.id
     },
-    function(err, user) {
+    async function(err, user) {
       var newPassword = req.body.newPassword;
       var confirmPassword = req.body.confirmPassword;
-      req.checkBody("newPassword", "Please enter a password!").notEmpty();
-      req
-        .checkBody("confirmPassword", "Passwords do not match.")
-        .equals(req.body.newPassword);
-
-      var errors = req.validationErrors();
-      if (errors) {
+      await check("newPassword", "Please enter a password!").notEmpty().run(req);
+      await check("confirmPassword", "Passwords do not match.").equals(req.body.newPassword).run(req);
+      var errors = validationResult(req);
+      if (!errors.isEmpty()) {
         req.flash("error_msg", "Passwords do not match.");
         res.redirect("/admin/edituser/" + req.params.id);
       } else {
