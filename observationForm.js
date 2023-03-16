@@ -32,49 +32,61 @@ var tableStructure = {
 				name: "Match Number",
 				data: "match"
 			},
-			auto_taxi: {
-				name: "[Auto] Taxi",
-				data: "auto_taxi"
+			auto_community: {
+				name: "[Auto] Community",
+				data: "auto_community"
 			},
-			auto_low_goals: {
-				name: "[Auto] Low Goals Scored",
-				data: "auto_low_goals"
+			auto_scored_objects: {
+				name: "[Auto] Objects Scored",
+				data: "auto_scored_objects"
 			},
-			auto_high_goals: {
-				name: "[Auto] High Goals Scored",
-				data: "auto_high_goals"
+			auto_dropped_objects: {
+				name: "[Auto] Objects Dropped",
+				data: "auto_dropped_objects"
 			},
-			auto_comments: {
-				name: "[Auto] Extra Comments",
-				data: "auto_comments"
+			auto_charging: {
+				name: "[Auto] Charging",
+				data: "auto_charging"
 			},
-			teleop_low_goals: {
-				name: "[Teleop] Low Goals Scored",
-				data: "teleop_low_goals"
+			auto_balanced: {
+				name: "[Auto] Balanced",
+				data: "auto_balanced"	
 			},
-			teleop_high_goals: {
-				name: "[Teleop] High Goals Scored",
-				data: "teleop_high_goals"
+			auto_collisions: {
+				name: "[Auto] Collisions",
+				data: "auto_collisions"		
 			},
-			teleop_eject_balls: {
-				name: "[Teleop] Did they have a thing to eject wrong color balls?",
-				data: "teleop_eject_balls"
+			teleop_scored_objects: {
+				name: "[Teleop] Scored Objects",
+				data: "teleop_scored_objects"	
 			},
-			teleop_shoot_balls: {
-				name: "[Teleop] Where balls are shooted from",
-				data: "teleop_shoot_balls"
+			teleop_dropped_objects: {
+				name: "[Teleop] Dropped Objects",
+				data: "teleop_dropped_objects"	
+			},
+			teleop_element_types: {
+				name: "[Teleop] Element Types",
+				data: "teleop_element_types"	
 			},
 			teleop_robot_died: {
-				name: "[Teleop] Robot died",
-				data: "teleop_robot_died"
+				name: "[Teleop] Robot Died",
+				data: "teleop_robot_died"	
 			},
 			teleop_time_robot_died: {
-				name: "[Teleop] How long robot was dead",
-				data: "teleop_time_robot_died"
+				name: "[Teleop] Time robot Died",
+				data: "teleop_time_robot_died"	
 			},
-			teleop_comments: {
-				name: "[Teleop] Extra comments",
-				data: "teleop_comments"
+			endgame_final_state: {
+				name: "[Endgame] Final State",
+				data: "endgame_final_state"	
+			},
+			endgame_charge_time: {
+				name: "[Endgame] Charge Time",
+				data: "endgame_charge_time"
+			},
+			endgame_balancing: {
+				name: "[Endgame] Balancing",
+				data: "endgame_balancing"
 			},
 			time_on_defense: {
 				name: "[Defense] Percent of time on defense",
@@ -84,17 +96,21 @@ var tableStructure = {
 				name: "[Bot] Speed compared to our robot",
 				data: "speed"
 			},
-			endgame_climb: {
-				name: "[Endgame] Climb",
-				data: "endgame_climb"
+			auto_comments: {
+				name: "Auto comments",
+				data: "auto_comments"
 			},
-			endgame_climb_time: {
-				name: "[Endgame] Climb time",
-				data: "endgame_climb_time"
+			teleop_comments: {
+				name: "Teleop comments",
+				data: "teleop_comments"
 			},
 			endgame_comments: {
-				name: "[Endgame] Extra comments",
+				name: "Endgame comments",
 				data: "endgame_comments"
+			},
+			driver_comments: {
+				name: "Driver comments",
+				data: "driver_comments"
 			},
 			driver_skill: {
 				name: "Driver Skill",
@@ -134,7 +150,7 @@ var observationFormSchema = {
 		title: "Team Number",
 		subtitle: "This is the team number that you are observing"
 	},
-	auto_taxi: {
+	auto_community: {
 		type: String,
 		input: "multiple_choice",
 		data: {
@@ -142,99 +158,81 @@ var observationFormSchema = {
 			"no": "No"
 		},
 		placeholder: "Yes or No",
-		title: "[Auto] Tarmac",
-		subtitle: "Did they drive outside the tarmac?"
-
+		title: "[Auto] Community",
+		subtitle: "Did they exit the community?"
 	},
-	auto_high_goals: {
+	auto_scored_objects: {
 		type: String,
 		input: "increment_number",
 		placeholder: "Number only",
-		title: "[Auto] High goals scored",
-		subtitle: "How many balls were successfully scored in the high/upper goals during auto?"
+		title: "[Auto] Objects scored",
+		subtitle: "How many objects were successfully scored during auto?"
 	},
-	auto_low_goals: {
+	auto_dropped_objects: {
 		type: String,
 		input: "increment_number",
 		placeholder: "Number only",
-		title: "[Auto] Low goals scored",
-		subtitle: "How many balls were successfully scored in the low goal during auto?"
+		title: "[Auto] Objects dropped",
+		subtitle: "How many objects were dropped during auto?"
 	},
-	teleop_high_goals: {
+	auto_charging: {
 		type: String,
-		input: "increment_number",
-		placeholder: "Number only",
-		title: "[Teleop] High goals scored",
-		subtitle: "How many balls were successfully scored in the high goal during teleop?"
-	},
-	teleop_low_goals: {
-		type: String,
-		input: "increment_number",
-		placeholder: "Number only",
-		title: "[Teleop] Low goals scored",
-		subtitle: "How many balls were successfully scored in the low goal during teleop?"
-	},
-	teleop_shot_accuracy: {
-		type: String,
-		input: "slider",
+		input: "multiple_choice",
 		data: {
-			"min": 0,
-			"max": 100
+			"yes": "Yes",
+			"no": "No",
+			"fell": "Fell/Rolled Off"
 		},
-		title: "[Teleop] Shot Accuracy",
-		subtitle: "Approximate their shot accuracy as a percentage"
+		placeholder: "Yes or No",
+		title: "[Auto] Charging",
+		subtitle: "Did they successfully charge on the charging station?"
 	},
-	endgame_climb: {
+	auto_balanced: {
 		type: String,
-		input: "dropdown",
-		placeholder: "Select applicable",
+		input: "multiple_choice",
 		data: {
-			"low_bar": "Successful low bar climb",
-			"mid_bar": "Successful mid bar climb",
-			"high_bar": "Successful high bar climb",
-			"traverse_bar": "Successful traverse bar climb",
-			"failed": "Attempted a climb but failed (elaborate which in comments, explain failure)",
-			"no_attempt": "Did not attempt"
+			"yes": "Yes",
+			"no": "No",
 		},
-		title: "[Endgame] Climbing",
-		subtitle: "Carefully select all that apply"
+		placeholder: "Yes or No",
+		title: "[Auto] Charging",
+		subtitle: "Did they successfully balance on the charging station?"
 	},
-	endgame_climb_time: {
+	auto_collisions: {
 		type: String,
-		input: "slider",
+		input: "multiple_choice",
 		data: {
-			"min": 0,
-			"max": 60
+			"yes": "Yes",
+			"no": "No",
 		},
-		title: "[Endgame] Time to climb",
-		subtitle: "Estimate the amount of time it took for robot to climb"
+		placeholder: "Yes or No",
+		title: "[Auto] Collisions",
+		subtitle: "Did they collide?"	
 	},
-	// teleop_eject_balls: {
-	// 	type: String,
-	// 	input: "checkbox",
-	// 	placeholder: "Select all that apply",
-	// 	data: {
-	// 		"seperate_eject": "Yes, could eject with a separate mechanism automatically",
-	// 		"shooting_eject_auto": "Yes, ejected with the shooter automatically",
-	// 		"shooting_eject_manual": "Yes, ejected with the shooter manually",
-	// 		"cannot_eject": "Fired wrong color balls in",
-	// 	},
-	// 	title: "[Game] Did they have a thing to eject wrong color balls?",
-	// 	subtitle: "Describe whether they could eject wrong color balls (automatically or manually) or if they fired the wrong colored balls in. If it's notable, expand more in the teleop comments.",
-	// },
-	teleop_shoot_balls: {
+	teleop_scored_objects: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Teleop] Objects scored",
+		subtitle: "How many objects were successfully scored during teleop?"
+	},
+	teleop_dropped_objects: {
+		type: String,
+		input: "increment_number",
+		placeholder: "Number only",
+		title: "[Teleop] Objects dropped",
+		subtitle: "How many objects were dropped during teleop?"
+	},
+	teleop_element_types: {
 		type: String,
 		input: "checkbox",
 		placeholder: "Select all that apply",
 		data: {
-			"launch_pad": "Completely within the Protected Zone / Launch Pad",
-			"tarmac": "The Tarmac (Colored zone in front of the hub)",
-			"terminal": "From the terminal",
-			"wherever": "Literally wherever they want to",
-			"one_position": "One set area they have to shoot from, elaborate in comments",
+			"cone": "Cone",
+			"cube": "Cube",
 		},
-		title: "[Game] Where balls are being shot from",
-		subtitle: "Describe where the robot shot balls from. If it's notable, expand more in the teleop comments."
+		title: "[Teleop] Elements",
+		subtitle: "What types of objects did they pick up?"
 	},
 	teleop_robot_died: {
 		type: String,
@@ -252,6 +250,42 @@ var observationFormSchema = {
 		placeholder: "Format: number of seconds only",
 		title: "[Game] Amount of time that robot was dead",
 		subtitle: "Max: 150. If the robot didn't die, leave this blank"
+	},
+	endgame_final_state: {
+		type: String,
+		input: "dropdown",
+		placeholder: "Select applicable",
+		data: {
+			"on_docked": "On Charge Station and docked",
+			"on_not_docked": "On Charge Station and not docked",
+			"failed_attempt": "Failed to get on charge station",
+			"no_attempt": "Did not attempt"
+		},
+		title: "[Endgame] Final State",
+		subtitle: "Carefully select all that apply"
+	},
+	endgame_charge_time: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 0,
+			"max": 60
+		},
+		title: "[Endgame] Time to charge",
+		subtitle: "Estimate the amount of time it took for robot to charge"
+	},
+	endgame_balancing: {
+		type: String,
+		input: "dropdown",
+		placeholder: "Select applicable",
+		data: {
+			"balanced": "Perfectly balanced",
+			"collided": "Ran into ally",
+			"fell": "Fell off and made everything tip",
+			"counter_counter_balancing": "Prevented others from balancing by trying to balance, but incorrectly"
+		},
+		title: "[Endgame] Charge station",
+		subtitle: "Carefully select all that apply"
 	},
 	time_on_defense: {
 		type: String,
@@ -275,16 +309,6 @@ var observationFormSchema = {
 		title: "[Bot] Speed compared to our robot (18 ft/second)",
 		subtitle: "Approximate this if you can"
 	},
-	driver_skill: {
-		type: String,
-		input: "slider",
-		data: {
-			"min": 1,
-			"max": 5
-		},
-		title: "Driver Skill",
-		subtitle: "On a scale from 1 (very bad) - 5 (very good), please rate how good the driving was"
-	},
 	auto_comments: {
 		type: String,
 		input: "long_text",
@@ -302,6 +326,22 @@ var observationFormSchema = {
 		input: "long_text",
 		title: "[Endgame] Any extra comments about the end of the game?",
 		subtitle: "Put anything that would be noteworthy about the end of the game here."
+	},	
+	driver_comments: {
+		type: String,
+		input: "long_text",
+		title: "Any comments about the driver's skill?",
+		subtitle: "Put anything that would be noteworthy about the end of the game here."
+	},	
+	driver_skill: {
+		type: String,
+		input: "slider",
+		data: {
+			"min": 1,
+			"max": 5
+		},
+		title: "Driver Skill",
+		subtitle: "On a scale from 1 (very bad) - 5 (very good), please rate how good the driving was"
 	},
 	final_comments: {
 		type: String,

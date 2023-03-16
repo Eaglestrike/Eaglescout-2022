@@ -83,28 +83,27 @@ router.get('/list/:team', utils.ensureAuthenticated, function(req, res) {
 	//maxes
 	var games_played = 0;
 	var robotCapabilities = {
-		auto_taxi: 0,
-		auto_low_goals: 0,
-		auto_high_goals: 0,
-		teleop_low_goals: 0,
-		teleop_high_goals: 0,
-		teleop_eject_balls: [],
-		teleop_shoot_balls: [],
+		auto_community: [],
+		auto_scored_objects: 0,
+		auto_dropped_objects: 0,
+		auto_charging: [],
+		auto_balanced: [],
+		teleop_scored_objects: 0,
+		teleop_dropped_objects: 0,
+		teleop_element_types: [],
+		endgame_charging: [],
+		endgame_balancing: [],
 		//0 is slow, 1 is medium, 2 is fast
 		speed: 0,
-		//climb is 0 is none, 1 is low, 2 is mid, 3 is high, 4 is traversal
-		endgame_climb: 0,
 		teleop_robot_died: [],
-		time_on_defense: [],
+		time_on_defense: 0,
 	};
 	//averages
 	var robotAverages = {
-		auto_taxi: 0,
-		auto_low_goals: 0,
-		auto_high_goals: 0,
-		teleop_low_goals: 0,
-		teleop_high_goals: 0,
-		endgame_climb: 0,
+		auto_scored_objects: 0,
+		auto_dropped_objects: 0,
+		teleop_scored_objects: 0,
+		teleop_dropped_objects: 0,
 		points_generated: 0
 	};
 	function removeDuplicates(a) {
